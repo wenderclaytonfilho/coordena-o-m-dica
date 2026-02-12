@@ -186,34 +186,41 @@
             return procedure;
         }
 
+        // Função para limpar caracteres inválidos para o nome das abas
+        function cleanSheetName(sheetName) {
+            return sheetName.replace(/[\\\/:*?"<>|]/g, "_");
+        }
+
         // Função para baixar a planilha separada por médicos
         function downloadNewSpreadsheet() {
             const newWorkbook = XLSX.utils.book_new();
 
             // Criação das abas por médico
             for (let doctor in medicalData.doctors) {
-                const sheetData = [["Paciente", "Data Cirurgia", "Procedimento", "Categoria"]];
+                const sheetData = [["Data Cirurgia" , "Paciente", "Procedimento", "Categoria"]];
                 const procedures = medicalData.doctors[doctor];
 
                 procedures.forEach(procedure => {
-                    sheetData.push([procedure.patientName, procedure.surgeryDate, procedure.procedure, procedure.category]);
+                    sheetData.push([procedure.surgeryDate, procedure.patientName, procedure.procedure, procedure.category]);
                 });
 
+                const cleanDoctorName = cleanSheetName(doctor);
                 const newSheet = XLSX.utils.aoa_to_sheet(sheetData);
-                XLSX.utils.book_append_sheet(newWorkbook, newSheet, doctor);
+                XLSX.utils.book_append_sheet(newWorkbook, newSheet, cleanDoctorName);
             }
 
             // Criação das abas por anestesista
             for (let anesthetist in medicalData.anesthetists) {
-                const sheetData = [["Paciente", "Data Cirurgia", "Procedimento", "Categoria"]];
+                const sheetData = [["Data Cirurgia" , "Paciente", "Procedimento", "Categoria"]];
                 const procedures = medicalData.anesthetists[anesthetist];
 
                 procedures.forEach(procedure => {
-                    sheetData.push([procedure.patientName, procedure.surgeryDate, procedure.procedure, procedure.category]);
+                    sheetData.push([procedure.surgeryDate, procedure.patientName, procedure.procedure, procedure.category]);
                 });
 
+                const cleanAnesthetistName = cleanSheetName(anesthetist);
                 const newSheet = XLSX.utils.aoa_to_sheet(sheetData);
-                XLSX.utils.book_append_sheet(newWorkbook, newSheet, anesthetist);
+                XLSX.utils.book_append_sheet(newWorkbook, newSheet, cleanAnesthetistName);
             }
 
             // Baixar a nova planilha

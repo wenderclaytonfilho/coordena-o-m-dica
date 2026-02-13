@@ -149,7 +149,7 @@
                     patientName,
                     surgeryDate,
                     category,
-                    procedure: getProcedureWithType(procedure, doctor1, "1° CIRURGIÃO"),
+                    procedure: getProcedureWithType(procedure, doctor1, "1° CIRURGIÃO", doctor2),
                 };
 
                 if (doctor1) {
@@ -161,7 +161,7 @@
                     patientName,
                     surgeryDate,
                     category,
-                    procedure: getProcedureWithType(procedure, doctor2, "2° CIRURGIÃO"),
+                    procedure: getProcedureWithType(procedure, doctor2, "2° CIRURGIÃO", doctor1),
                 };
 
                 if (doctor2) {
@@ -178,10 +178,14 @@
             return { doctors, anesthetists };
         }
 
-        // Função para adicionar o tipo de cirurgia dependendo do papel do médico
-        function getProcedureWithType(procedure, doctor, role) {
+        // Função para adicionar o tipo da cirurgia dependendo do papel do médico
+        function getProcedureWithType(procedure, doctor, role, otherDoctor) {
             if (doctor) {
-                return `${procedure} (${role})`;
+                // Verifica se há apenas um cirurgião (se o outro cirurgião não estiver presente)
+                if (role === "1° CIRURGIÃO" && !otherDoctor) {
+                    return `${procedure}`; // Retorna apenas o nome do procedimento
+                }
+                return `${procedure} (${role})`; // Caso contrário, retorna o nome do procedimento com o papel
             }
             return procedure;
         }

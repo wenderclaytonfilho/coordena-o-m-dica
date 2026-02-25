@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferramenta de Extração de Procedimentos Médicos</title>
+    <title>PARSER - CIRURGIAS</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -77,11 +77,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
     <script>
-        // Variáveis globais
         let medicalData = { doctors: {}, anesthetists: {} };
         let currentFile = null;
 
-        // Valores predefinidos para as cirurgias
         const procedureValues = {
             "colecistectomia": { doctor1: 700, doctor2: 300 },
             "histerectomia": { doctor1: 700, doctor2: 300 },
@@ -100,7 +98,6 @@
             "laqueadura": { doctor1: 223.18, doctor2: 93.51 }
         };
 
-        // Função para processar o arquivo
         function processFile() {
             const fileInput = document.getElementById('file-input');
             if (fileInput.files.length === 0) {
@@ -110,34 +107,32 @@
 
             currentFile = fileInput.files[0];
             const reader = new FileReader();
+
             reader.onload = function(e) {
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
 
-                // Processa a aba "GERAL"
                 const generalSheet = workbook.Sheets['GERAL'];
                 if (generalSheet) {
                     const json = XLSX.utils.sheet_to_json(generalSheet, { header: 1, defval: "" });
                     medicalData = parseMedicalData(json);
-                    document.getElementById('status').textContent = 'Planilha carregada com sucesso! Clique no botão para baixar a planilha separada.';
+                    document.getElementById('status').textContent = 
+                        'Planilha carregada com sucesso! Clique no botão para baixar a planilha separada.';
                     document.getElementById('download-excel').style.display = 'inline-block';
                 } else {
                     alert("Não encontrei a aba 'GERAL' na planilha.");
                 }
             };
-            
+
             reader.readAsArrayBuffer(currentFile);
         }
 
-        // Função para processar os dados médicos
         function parseMedicalData(sheetData) {
             const doctors = {};
             const anesthetists = {};
 
-            // A primeira linha geralmente é o cabeçalho
             const headers = sheetData[0];
 
-            // Identificar o índice das colunas
             const doctor1Index = headers.indexOf("CIRURGIÃO 1");
             const doctor2Index = headers.indexOf("CIRURGIÃO 2");
             const anesthetistIndex = headers.indexOf("ANESTESISTA");
@@ -146,12 +141,14 @@
             const procedureIndex = headers.indexOf("TIPO DE CIRURGIA");
             const categoryIndex = headers.indexOf("CATEGORIA");
 
-            if (doctor1Index === -1 || doctor2Index === -1 || anesthetistIndex === -1 || procedureIndex === -1 || patientNameIndex === -1 || surgeryDateIndex === -1 || categoryIndex === -1) {
+            if (doctor1Index === -1 || doctor2Index === -1 || anesthetistIndex === -1 || 
+                procedureIndex === -1 || patientNameIndex === -1 || 
+                surgeryDateIndex === -1 || categoryIndex === -1) {
+
                 alert("As colunas necessárias não foram encontradas na planilha.");
                 return { doctors: {}, anesthetists: {} };
             }
 
-            // Processando os dados a partir da segunda linha
             for (let i = 1; i < sheetData.length; i++) {
                 const row = sheetData[i];
 
@@ -163,88 +160,103 @@
                 const procedure = row[procedureIndex];
                 const category = row[categoryIndex];
 
-                // Obtém o valor da cirurgia baseado no procedimento
-                const procedureValue = getProcedureValue(procedure, doctor1, doctor2);
+                const procedureValue = getProcedureValue(procedure);
 
-                // Modifica o tipo da cirurgia com base no papel do médico
-                const procedureWithType = {
-                    category,
-                    surgeryDate,
-                    patientName,
-                    procedure: getProcedureWithType(procedure, doctor1, "1° CIRURGIÃO", doctor2),
-                    value: procedureValue.doctor1
-                };
-
+                // 1° CIRURGIÃO
                 if (doctor1) {
+                    const procedureWithType = {
+                        category,
+                        surgeryDate,
+                        patientName,
+                        procedure: getProcedureWithType(procedure, doctor1, "1° CIRURGIÃO", doctor2),
+                        assistant: doctor2 ? doctor2 : "Sem assistente",
+                        value: procedureValue.doctor1
+                    };
+
                     if (!doctors[doctor1]) doctors[doctor1] = [];
                     doctors[doctor1].push(procedureWithType);
                 }
 
-                const procedureWithType2 = {
-                    category,
-                    surgeryDate,
-                    patientName,
-                    procedure: getProcedureWithType(procedure, doctor2, "2° CIRURGIÃO", doctor1),
-                    value: procedureValue.doctor2
-                };
-
+                // 2° CIRURGIÃO
                 if (doctor2) {
+                    const procedureWithType2 = {
+                        category,
+                        surgeryDate,
+                        patientName,
+                        procedure: getProcedureWithType(procedure, doctor2, "2° CIRURGIÃO", doctor1),
+                        assistant: doctor1 ? doctor1 : "Sem assistente",
+                        value: procedureValue.doctor2
+                    };
+
                     if (!doctors[doctor2]) doctors[doctor2] = [];
                     doctors[doctor2].push(procedureWithType2);
                 }
 
+                // ANESTESISTA (mantém assistente como vazio)
                 if (anesthetist) {
+                    const anesthetistProcedure = {
+                        category,
+                        surgeryDate,
+                        patientName,
+                        procedure,
+                        assistant: "",
+                        value: 0
+                    };
+
                     if (!anesthetists[anesthetist]) anesthetists[anesthetist] = [];
-                    anesthetists[anesthetist].push(procedureWithType);
+                    anesthetists[anesthetist].push(anesthetistProcedure);
                 }
             }
 
             return { doctors, anesthetists };
         }
 
-        // Função para obter o valor da cirurgia baseado no procedimento
-        function getProcedureValue(procedure, doctor1, doctor2) {
-            // Normaliza o nome do procedimento para minúsculas
+        function getProcedureValue(procedure) {
             const normalizedProcedure = procedure.toLowerCase();
             const defaultValue = { doctor1: 0, doctor2: 0 };
 
-            // Busca por correspondência de substring
             for (let key in procedureValues) {
                 if (normalizedProcedure.includes(key)) {
                     return procedureValues[key];
                 }
             }
-            return defaultValue; // Retorna valor padrão se não encontrar correspondência
+
+            return defaultValue;
         }
 
-        // Função para adicionar o tipo da cirurgia dependendo do papel do médico
         function getProcedureWithType(procedure, doctor, role, otherDoctor) {
             if (doctor) {
-                // Verifica se há apenas um cirurgião (se o outro cirurgião não estiver presente)
                 if (role === "1° CIRURGIÃO" && !otherDoctor) {
-                    return `${procedure}`; // Retorna apenas o nome do procedimento
+                    return procedure;
                 }
-                return `${procedure} (${role})`; // Caso contrário, retorna o nome do procedimento com o papel
+                return `${procedure} (${role})`;
             }
             return procedure;
         }
 
-        // Função para limpar caracteres inválidos para o nome das abas
         function cleanSheetName(sheetName) {
             return sheetName.replace(/[\\\/:*?"<>|]/g, "_");
         }
 
-        // Função para baixar a planilha separada por médicos
         function downloadNewSpreadsheet() {
             const newWorkbook = XLSX.utils.book_new();
 
-            // Criação das abas por médico
             for (let doctor in medicalData.doctors) {
-                const sheetData = [["Categoria", "Data Cirurgia", "Paciente", "Procedimento", "Valor"]];
+                const sheetData = [
+                    ["Categoria", "Data Cirurgia", "Paciente", "Procedimento", "Assistente", "Valor"]
+                ];
+
                 const procedures = medicalData.doctors[doctor];
 
                 procedures.forEach(procedure => {
-                    sheetData.push([procedure.category, procedure.surgeryDate, procedure.patientName, procedure.procedure, procedure.value]);
+                    sheetData.push([
+                        procedure.category,
+                        procedure.surgeryDate,
+                        procedure.patientName,
+                        procedure.procedure,
+                        procedure.assistant,
+                        procedure.value
+                    ]);
                 });
 
                 const cleanDoctorName = cleanSheetName(doctor);
@@ -252,21 +264,6 @@
                 XLSX.utils.book_append_sheet(newWorkbook, newSheet, cleanDoctorName);
             }
 
-            // Criação das abas por anesthesista
-            for (let anesthetist in medicalData.anesthetists) {
-                const sheetData = [["Categoria", "Data Cirurgia", "Paciente", "Procedimento", "Valor"]];
-                const procedures = medicalData.anesthetists[anesthetist];
-
-                procedures.forEach(procedure => {
-                    sheetData.push([procedure.category, procedure.surgeryDate, procedure.patientName, procedure.procedure, procedure.value]);
-                });
-
-                const cleanAnesthetistName = cleanSheetName(anesthetist);
-                const newSheet = XLSX.utils.aoa_to_sheet(sheetData);
-                XLSX.utils.book_append_sheet(newWorkbook, newSheet, cleanAnesthetistName);
-            }
-
-            // Baixar a nova planilha
             XLSX.writeFile(newWorkbook, "procedimentos_separados.xlsx");
         }
     </script>

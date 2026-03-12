@@ -51,9 +51,9 @@
             gap: 10px;
         }
 
-        input[type="checkbox"]{
-        transform: scale(1.6);
-        cursor: pointer;
+        input[type="checkbox"] {
+            transform: scale(1.6);
+            cursor: pointer;
         }
 
         input[type="text"] {
@@ -105,6 +105,7 @@
         const setores = {
 
             "Emergência": [
+                "AÍLTON NIXON SUASSUNA PORTO",
                 "ALEXANDRE HENRIQUE COSTA GONÇALVES",
                 "RAYANNE ORELLANA PEREIRA CABRAL",
                 "MESSIAS DE JESUS MENDES",
@@ -217,6 +218,11 @@
         };
 
         const lista = document.getElementById("lista");
+
+        // Ordenar médicos alfabeticamente
+        Object.keys(setores).forEach(setor => {
+            setores[setor].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+        });
 
         for (const setor in setores) {
 
@@ -370,6 +376,4 @@
 
 </body>
 
-
 </html>
-

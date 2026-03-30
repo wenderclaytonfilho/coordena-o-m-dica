@@ -3,8 +3,125 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relatório de Presença Médica</title>
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            padding: 30px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #1f2937;
+        }
+
+        button {
+            padding: 10px 16px;
+            margin: 10px 5px 20px 0;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .busca {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .obs {
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .calendario {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .dia {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .dia:hover {
+            transform: scale(1.03);
+            opacity: 0.95;
+        }
+
+        .detalhes-dia {
+            margin-top: 25px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #f8fafc;
+        }
+
+        .setor-bloco {
+            margin-bottom: 15px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+    </style>
 </head>
 
 <body>
@@ -21,34 +138,38 @@
         <button onclick="exportar()">Exportar TXT</button>
         <button onclick="exportarExcel()">Exportar Excel</button>
 
-        <br>
-
-        <input class="busca" placeholder="Buscar médico..." onkeyup="filtrar(this.value)">
+        <input class="busca" placeholder="Buscar médico ou setor..."
+            onkeyup="filtrar(this.value)">
 
         <table id="tabela">
-
             <thead>
                 <tr>
                     <th>Médico</th>
+                    <th>Setor</th>
                     <th>Total de Plantões</th>
                     <th>Dias Trabalhados</th>
                     <th>Observações</th>
                 </tr>
             </thead>
-
             <tbody></tbody>
-
         </table>
+
+        <h2>Calendário de Plantões</h2>
+        <div id="calendario" class="calendario"></div>
+
+        <div id="detalhesDia" class="detalhes-dia">
+            <h3>Selecione um dia</h3>
+            <div id="conteudoDia"></div>
+        </div>
 
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-    <script>
 
+    <script>
         let dadosMedicos = {}
 
         function processar() {
-
             const file = document.getElementById("arquivo").files[0]
 
             if (!file) {
@@ -59,41 +180,44 @@
             const reader = new FileReader()
 
             reader.onload = function (e) {
-
                 const texto = e.target.result
-
                 const relatorios = texto.split("RELATÓRIO DE PRESENÇA MÉDICA")
 
                 dadosMedicos = {}
 
                 relatorios.forEach(rel => {
-
                     const dataMatch = rel.match(/Data do Plantão:\s*(\d{4}-\d{2}-\d{2})/)
 
                     if (!dataMatch) return
 
                     const data = dataMatch[1]
-
                     const linhas = rel.split("\n")
 
-                    linhas.forEach(l => {
+                    let setorAtual = ""
 
+                    linhas.forEach(l => {
                         l = l.trim()
 
-                        if (l.startsWith("- ")) {
+                        if (
+                            l &&
+                            !l.startsWith("-") &&
+                            !l.includes("Data do Plantão") &&
+                            !l.includes("Gerado em") &&
+                            !l.includes("RELATÓRIO")
+                        ) {
+                            setorAtual = l
+                        }
 
+                        if (l.startsWith("- ")) {
                             let conteudo = l.replace("- ", "").trim()
 
                             let nome = conteudo
                             let obs = ""
 
                             if (conteudo.includes("|")) {
-
                                 let p = conteudo.split("|")
-
                                 nome = p[0].trim()
                                 obs = p[1].trim()
-
                             }
 
                             if (!dadosMedicos[nome]) {
@@ -102,168 +226,210 @@
 
                             dadosMedicos[nome].push({
                                 data: data,
-                                obs: obs
+                                obs: obs,
+                                setor: setorAtual
                             })
-
                         }
-
                     })
-
                 })
 
                 gerarTabela()
-
+                gerarCalendario()
             }
 
             reader.readAsText(file)
-
         }
 
         function formatar(data) {
-
             let p = data.split("-")
-
             return `${p[2]}/${p[1]}`
-
         }
 
         function gerarTabela() {
-
             const tbody = document.querySelector("#tabela tbody")
-
             tbody.innerHTML = ""
 
-            const nomes = Object.keys(dadosMedicos).sort((a, b) => a.localeCompare(b, 'pt-BR'))
+            const nomes = Object.keys(dadosMedicos)
+                .sort((a, b) => a.localeCompare(b, 'pt-BR'))
 
             nomes.forEach(nome => {
-
                 const registros = dadosMedicos[nome]
 
                 let dias = []
                 let obs = []
+                let setores = new Set()
 
                 registros.forEach(r => {
-
                     dias.push(formatar(r.data))
+                    setores.add(r.setor)
 
                     if (r.obs) {
                         obs.push(`${formatar(r.data)} (${r.obs})`)
                     }
-
                 })
 
                 const tr = document.createElement("tr")
 
                 tr.innerHTML = `
-<td>${nome}</td>
-<td>${registros.length}</td>
-<td>${dias.join(", ")}</td>
-<td class="obs">${obs.join("<br>")}</td>
-`
+                    <td>${nome}</td>
+                    <td>${Array.from(setores).join(", ")}</td>
+                    <td>${registros.length}</td>
+                    <td>${dias.join(", ")}</td>
+                    <td class="obs">${obs.join("<br>")}</td>
+                `
 
                 tbody.appendChild(tr)
-
             })
-
         }
 
         function filtrar(valor) {
-
             valor = valor.toLowerCase()
 
             document.querySelectorAll("#tabela tbody tr").forEach(tr => {
-
                 const nome = tr.children[0].innerText.toLowerCase()
+                const setor = tr.children[1].innerText.toLowerCase()
 
-                tr.style.display = nome.includes(valor) ? "" : "none"
+                tr.style.display =
+                    nome.includes(valor) || setor.includes(valor)
+                        ? ""
+                        : "none"
+            })
+        }
 
+        function gerarCalendario() {
+            const calendario = document.getElementById("calendario")
+            calendario.innerHTML = ""
+
+            let diasMap = {}
+
+            Object.keys(dadosMedicos).forEach(nome => {
+                dadosMedicos[nome].forEach(r => {
+                    if (!diasMap[r.data]) {
+                        diasMap[r.data] = []
+                    }
+
+                    diasMap[r.data].push({
+                        nome: nome,
+                        setor: r.setor,
+                        obs: r.obs
+                    })
+                })
             })
 
+            Object.keys(diasMap)
+                .sort()
+                .forEach(data => {
+                    const botao = document.createElement("button")
+                    botao.className = "dia"
+                    botao.innerText = formatar(data)
+
+                    botao.onclick = () => mostrarDetalhesDia(data, diasMap[data])
+
+                    calendario.appendChild(botao)
+                })
+        }
+
+        function mostrarDetalhesDia(data, registros) {
+            const conteudo = document.getElementById("conteudoDia")
+
+            let setores = {}
+
+            registros.forEach(r => {
+                if (!setores[r.setor]) {
+                    setores[r.setor] = []
+                }
+
+                let nomeCompleto = r.nome
+
+                if (r.obs) {
+                    nomeCompleto += ` (${r.obs})`
+                }
+
+                setores[r.setor].push(nomeCompleto)
+            })
+
+            let html = `<h3>Plantões do dia ${formatar(data)}</h3>`
+
+            Object.keys(setores).forEach(setor => {
+                html += `
+                    <div class="setor-bloco">
+                        <strong>${setor}</strong><br>
+                        ${setores[setor].join(", ")}
+                    </div>
+                `
+            })
+
+            conteudo.innerHTML = html
         }
 
         function exportar() {
-
             let texto = "RELATÓRIO DE PLANTÕES\n\n"
 
             Object.keys(dadosMedicos).forEach(nome => {
-
                 texto += nome + "\n"
 
                 dadosMedicos[nome].forEach(r => {
+                    let p = r.data.split("-")
+                    let d = `${p[2]}/${p[1]}/${p[0]}`
 
-                    let data = r.data.split("-")
-
-                    let d = `${data[2]}/${data[1]}/${data[0]}`
-
-                    texto += d
+                    texto += `${d} - ${r.setor}`
 
                     if (r.obs) {
                         texto += ` (${r.obs})`
                     }
 
                     texto += "\n"
-
                 })
 
                 texto += "\n"
-
             })
 
             const blob = new Blob([texto], { type: "text/plain" })
 
             const link = document.createElement("a")
-
             link.href = URL.createObjectURL(blob)
-
             link.download = "plantao_medicos.txt"
-
             link.click()
-
         }
 
         function exportarExcel() {
-
             let dados = []
 
             Object.keys(dadosMedicos).forEach(nome => {
-
                 let registros = dadosMedicos[nome]
 
                 let dias = []
                 let obs = []
+                let setores = new Set()
 
                 registros.forEach(r => {
-
                     let p = r.data.split("-")
                     let dataFormatada = `${p[2]}/${p[1]}/${p[0]}`
 
                     dias.push(dataFormatada)
+                    setores.add(r.setor)
 
                     if (r.obs) {
                         obs.push(`${dataFormatada} (${r.obs})`)
                     }
-
                 })
 
                 dados.push({
                     Medico: nome,
+                    Setor: Array.from(setores).join(", "),
                     Plantoes: registros.length,
                     Dias: dias.join(", "),
                     Observacoes: obs.join(" | ")
                 })
-
             })
 
             const ws = XLSX.utils.json_to_sheet(dados)
-
             const wb = XLSX.utils.book_new()
 
             XLSX.utils.book_append_sheet(wb, ws, "Relatorio")
 
             XLSX.writeFile(wb, "relatorio_plantoes_medicos.xlsx")
-
         }
-
     </script>
 
 </body>

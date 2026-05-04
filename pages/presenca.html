@@ -1,389 +1,620 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Presença Médica</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Presença Médica</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <!-- 🔥 NOVO CSS -->
-    <style>
-        .obs-container {
-            margin-top: 5px;
-        }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-        .tipos {
-            display: flex;
-            gap: 8px;
-            margin-top: 5px;
-            flex-wrap: wrap;
-            font-size: 13px;
-        }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      margin: 0;
+      padding: 20px;
+      color: #1f2937;
+    }
 
-        .tipos label {
-            padding: 4px 8px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 24px;
+      border-radius: 14px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
 
-        .troca {
-            background: #fff3cd;
-        }
+    h1 {
+      text-align: center;
+      color: #0f6fb2;
+      margin-bottom: 20px;
+    }
 
-        .repasse {
-            background: #d1ecf1;
-        }
+    label {
+      font-weight: bold;
+    }
 
-        .substituicao {
-            background: #f8d7da;
-        }
-    </style>
+    input[type="date"],
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+    }
 
+    .setor {
+      margin-top: 25px;
+    }
+
+    .setor h2 {
+      background: #0f6fb2;
+      color: white;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .progresso {
+      color: #6b7280;
+      margin-bottom: 15px;
+    }
+
+    .medico {
+      padding: 14px;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      background: #f9fafb;
+    }
+
+    .medico-top {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .medico-top strong {
+      font-size: 14px;
+    }
+
+    .check {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .obs-container {
+      margin-top: 8px;
+    }
+
+    .tipos {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+
+    .tipos label {
+      padding: 6px 9px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: normal;
+    }
+
+    .troca {
+      background: #fff3cd;
+    }
+
+    .repasse {
+      background: #d1ecf1;
+    }
+
+    .substituicao {
+      background: #f8d7da;
+    }
+
+    .navegacao,
+    .acoes {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      padding: 12px 18px;
+      border-radius: 8px;
+      background: #0f6fb2;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover {
+      background: #095a91;
+    }
+
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-secundario {
+      background: #6b7280;
+    }
+
+    .btn-secundario:hover {
+      background: #4b5563;
+    }
+
+    .btn-final {
+      background: #16a34a;
+    }
+
+    .btn-final:hover {
+      background: #15803d;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        padding: 16px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .navegacao,
+      .acoes {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-    <div class="container">
+  <div class="container">
 
-        <h1>Controle de Presença Médica</h1>
+    <h1>Controle de Presença Médica</h1>
 
-        <label>Data do Plantão:</label>
-        <input type="date" id="dataPlantao">
+    <label>Data do Plantão:</label>
+    <input type="date" id="dataPlantao">
 
-        <div id="lista"></div>
+    <div id="lista"></div>
 
-        <button onclick="gerarPDF()">Gerar PDF</button>
-        <button onclick="copiarRelatorio()">Copiar Relatório</button>
-
+    <div class="acoes">
+      <button class="btn-final" onclick="gerarPDF()">Gerar PDF</button>
+      <button class="btn-final" onclick="copiarRelatorio()">Copiar Relatório</button>
     </div>
 
-    <script>
+  </div>
 
-        document.getElementById("dataPlantao").value = new Date().toISOString().split("T")[0];
+  <script>
+    document.getElementById("dataPlantao").value = new Date().toISOString().split("T")[0];
 
-        const setores = {
+    const setores = {
+      "Clínicos - Emergência": [
+        "ALEXANDRE HENRIQUE COSTA GONÇALVES",
+        "RAYANNE ORELLANA PEREIRA CABRAL",
+        "MESSIAS DE JESUS MENDES",
+        "DENILSON ITAMAR ARAÚJO ROCHA FERREIRA",
+        "VICTOR EMMANOEL PEREIRA VALÕES",
+        "PATRICK DE MIRANDA LUCENA",
+        "PALOMA CORDEIRO DINIZ",
+        "SEVERINA SILVA AMARAL",
+        "DAVID ROGERIO GOMES RODRIGUES",
+        "JOSÉ ANTENOR MEDEIROS DE MENESES",
+        "JOÃO LUCAS",
+        "MARIA VITORIA ARAÚJO RAFAEL",
+        "CÉSAR HENRIQUE BATISTA DE MELO SOUZA",
+        "GUILHERME VICTOR SANTOS ALVES",
+        "BARBARA MENDES",
+        "LANDSTEINER DOS ANJOS LEITE",
+        "KLEITON MUNIZ",
+        "ARISTÓTELES DE ARAÚJO BRITO",
+        "ANA CAROLINE DANIEL DE SOUZA SILVA",
+        "ANDRÉ MENDES FIGUEIREDO",
+        "WEVERTON JEDIAEL RODRIGUES DE VASCONCELOS",
+        "DENILSON ITAMAR ARAÚJO ROCHA FERREIRA",
+        "BIANCA SIQUEIRA"
+      ],
 
-            "Clínicos - Emergência": [
-                "ALEXANDRE HENRIQUE COSTA GONÇALVES",
-                "RAYANNE ORELLANA PEREIRA CABRAL",
-                "MESSIAS DE JESUS MENDES",
-                "DENILSON ITAMAR ARAÚJO ROCHA FERREIRA",
-                "VICTOR EMMANOEL PEREIRA VALÕES",
-                "PATRICK DE MIRANDA LUCENA",
-                "PALOMA CORDEIRO DINIZ",
-                "SEVERINA SILVA AMARAL",
-                "DAVID ROGERIO GOMES RODRIGUES",
-                "JOSÉ ANTENOR MEDEIROS DE MENESES",
-                "JOÃO LUCAS",
-                "MARIA VITORIA ARAÚJO RAFAEL",
-                "CÉSAR HENRIQUE BATISTA DE MELO SOUZA",
-                "GUILHERME VICTOR SANTOS ALVES",
-                "BARBARA MENDES",
-                "LANDSTEINER DOS ANJOS LEITE",
-                "KLEITON MUNIZ",
-                "ARISTÓTELES DE ARAÚJO BRITO",
-                "ANA CAROLINE DANIEL DE SOUZA SILVA",
-                "ANDRÉ MENDES FIGUEIREDO",
-                "WEVERTON JEDIAEL RODRIGUES DE VASCONCELOS",
-                "DENILSON ITAMAR ARAÚJO ROCHA FERREIRA",
-                "BIANCA SIQUEIRA"
-            ],
+      "Ambulatório": [
+        "ANDRÉ LUIS HENRIQUE PINTO PEIXOTO",
+        "ANDRÉ RODRIGUES QUINTAS",
+        "ANTÔNIO GODE DE MORAES",
+        "FRANCISCO ERLANIO DE MELO JÚNIOR",
+        "JORGE LUIZ LUCENA LEITE",
+        "ERIVALDO RUMÃO DA LUZ",
+        "JORLANIO JOSÉ DIAS DE MORAES",
+        "JOSÉ MÍLTON FERNANDES DUARTE MELO",
+        "MICHELLE SOARES DE MOURA",
+        "DUNAY MACHADO MENDEZ",
+        "PEDRO HENRIQUE DE LIMA E SILVA",
+        "YOANDRYS FUENTES HECHAVARRIA",
+        "FERNANDO NEVES PEREIRA DA LUZ",
+        "FERNANDO FILHO",
+        "MATHEUS SOUTO PERAZZO VALADARES",
+        "TÚLIO FELIPE CARVALHO SILVA",
+        "ANTÔNIO AUGUSTO JORDÃO RAMOS ALBUQUERQUE",
+        "DENILSON ITAMAR ARAÚJO ROCHA FERREIRA"
+      ],
 
-            "Ambulatório": [
-                "ANDRÉ LUIS HENRIQUE PINTO PEIXOTO",
-                "ANDRÉ RODRIGUES QUINTAS",
-                "ANTÔNIO GODE DE MORAES",
-                "FRANCISCO ERLANIO DE MELO JÚNIOR",
-                "JORGE LUIZ LUCENA LEITE",
-                "ERIVALDO RUMÃO DA LUZ",
-                "JORLANIO JOSÉ DIAS DE MORAES",
-                "JOSÉ MÍLTON FERNANDES DUARTE MELO",
-                "MICHELLE SOARES DE MOURA",
-                "DUNAY MACHADO MENDEZ",
-                "PEDRO HENRIQUE DE LIMA E SILVA",
-                "YOANDRYS FUENTES HECHAVARRIA",
-                "FERNANDO NEVES PEREIRA DA LUZ",
-                "FERNANDO FILHO",
-                "MATHEUS SOUTO PERAZZO VALADARES",
-                "TÚLIO FELIPE CARVALHO SILVA",
-                "ANTÔNIO AUGUSTO JORDÃO RAMOS ALBUQUERQUE",
-                "DENILSON ITAMAR ARAÚJO ROCHA FERREIRA"
-            ],
+      "Cirurgião": [
+        "ERIVALDO RUMÃO DA LUZ",
+        "FERNANDO NEVES PEREIRA DA LUZ",
+        "FERNANDO FILHO",
+        "YOANDRYS FUENTES HECHAVARRIA",
+        "OTACÍLIO JOSÉ BRITO CIPRIANO",
+        "DENILSON ITAMAR ARAÚJO ROCHA FERREIRA",
+        "TALLES MENENZES AMARAL",
+        "DUNAY MACHADO MENDEZ"
+      ],
 
-            "Cirurgião": [
-                "ERIVALDO RUMÃO DA LUZ",
-                "FERNANDO NEVES PEREIRA DA LUZ",
-                "FERNANDO FILHO",
-                "YOANDRYS FUENTES HECHAVARRIA",
-                "OTACÍLIO JOSÉ BRITO CIPRIANO",
-                "DENILSON ITAMAR ARAÚJO ROCHA FERREIRA",
-                "TALLES MENENZES AMARAL",
-                "DUNAY MACHADO MENDEZ"
-            ],
+      "NEO e Pediatria": [
+        "PALOMA CORDEIRO DINIZ",
+        "ANA MARIA LUZ",
+        "JOSÉ ANTENOR MEDEIROS DE MENESES",
+        "CLÁUDIO GONÇALVES SOBREIRA",
+        "JORGE LUIZ LUCENA LEITE",
+        "PATRICK DE MIRANDA LUCENA",
+        "TATIANE BEZERRA DOS SANTOS",
+        "ROMÁRIO MASCENA AMORIM LOPES",
+        "LUCAS SANTOS",
+        "ALEXANDRE HENRIQUE COSTA GONÇALVES",
+        "MARIANA MARIA SOUTO PERAZZO",
+        "TALITA BRITO",
+        "JOÃO LUCAS",
+        "MICHELINE NUNES ALVES DE SOUZA",
+        "JAÍLSON DA PAIXÃO RAMOS",
+        "NATÁLIA LOUIZE XAVIER PEREIRA LIMA",
+        "JOSÉ JOCEILSON CRUZ DE ASSIS",
+        "ADEILSON ALVES DE SOUZA",
+        "JOSÉ ANTENOR MEDEIROS DE MENESES",
+        "BIANCA BARBOSA DE SIQUEIRA",
+        "ARTHUR LEITE"
+      ],
 
-            "NEO e Pediatria": [
-                "PALOMA CORDEIRO DINIZ",
-                "ANA MARIA LUZ",
-                "JOSÉ ANTENOR MEDEIROS DE MENESES",
-                "CLÁUDIO GONÇALVES SOBREIRA",
-                "JORGE LUIZ LUCENA LEITE",
-                "PATRICK DE MIRANDA LUCENA",
-                "TATIANE BEZERRA DOS SANTOS",
-                "ROMÁRIO MASCENA AMORIM LOPES",
-                "LUCAS SANTOS",
-                "ALEXANDRE HENRIQUE COSTA GONÇALVES",
-                "MARIANA MARIA SOUTO PERAZZO",
-                "TALITA BRITO",
-                "JOÃO LUCAS",
-                "MICHELINE NUNES ALVES DE SOUZA",
-                "JAÍLSON DA PAIXÃO RAMOS",
-                "NATÁLIA LOUIZE XAVIER PEREIRA LIMA",
-                "JOSÉ JOCEILSON CRUZ DE ASSIS",
-                "ADEILSON ALVES DE SOUZA",
-                "JOSÉ ANTENOR MEDEIROS DE MENESES",
-                "BIANCA BARBOSA DE SIQUEIRA",
-                "ARTHUR LEITE"
-                
-            ],
+      "Obstetrícia": [
+        "PAULO ADRIANO BESERRA QUIDUTE",
+        "OSMAN DE SOUZA LIRA",
+        "TÚLIO FELIPE CARVALHO SILVA",
+        "RENATA RAQUEL DE OLIVEIRA RABELO MARINHO",
+        "MONIQUE LIBERAL FIDÉLIS",
+        "ANTÔNIO AUGUSTO JORDÃO RAMOS ALBUQUERQUE",
+        "ANTÔNIO DE PÁDUA MELLO VIEIRA",
+        "CAMILA SOUSA PEREIRA GERMANO",
+        "KELLY GOMES",
+        "BEATRIZ GERMANO",
+        "IARA GEISA LIMA FERREIRA",
+        "MARCO ANTÔNIO MOLINA RODRIGUEZ"
+      ],
 
-            "Obstetrícia": [
-                "PAULO ADRIANO BESERRA QUIDUTE",
-                "OSMAN DE SOUZA LIRA",
-                "TÚLIO FELIPE CARVALHO SILVA",
-                "RENATA RAQUEL DE OLIVEIRA RABELO MARINHO",
-                "MONIQUE LIBERAL FIDÉLIS",
-                "ANTÔNIO AUGUSTO JORDÃO RAMOS ALBUQUERQUE",
-                "ANTÔNIO DE PÁDUA MELLO VIEIRA",
-                "CAMILA SOUSA PEREIRA GERMANO",
-                "KELLY GOMES",
-                "BEATRIZ GERMANO",
-                "IARA GEISA LIMA FERREIRA",
-                "MARCO ANTÔNIO MOLINA RODRIGUEZ"
-            ],
+      "Ortopedia": [
+        "EUGÊNIO PÉRICLES MUNIZ FERREIRA",
+        "MARCELO NUNES ALVES DE SOUSA",
+        "DIOGO CÉSAR DE SOUZA BEZERRA",
+        "HUGO ATILA ALVES DA COSTA",
+        "JOSÉ DIAS DE OLIVEIRA NETO",
+        "LUCAS DOS SANTOS GOMES",
+        "RAFAEL SAMPAIO LUNA GRANGEIRO",
+        "RENATO HOLANDA"
+      ],
 
-            "Ortopedia": [
-                "EUGÊNIO PÉRICLES MUNIZ FERREIRA",
-                "MARCELO NUNES ALVES DE SOUSA",
-                "DIOGO CÉSAR DE SOUZA BEZERRA",
-                "HUGO ATILA ALVES DA COSTA",
-                "JOSÉ DIAS DE OLIVEIRA NETO",
-                "LUCAS DOS SANTOS GOMES",
-                "RAFAEL SAMPAIO LUNA GRANGEIRO",
-                "RENATO HOLANDA"
-            ],
+      "UTI PED": [
+        "ROMÁRIO MASCENA AMORIM LOPES",
+        "ALEXANDRE HENRIQUE COSTA GONÇALVES",
+        "ISABELLY REGINA DE ALBUQUERQUE CORTEZ",
+        "JOSÉ JOCEILSON CRUZ DE ASSIS",
+        "ADEILSON ALVES DE SOUZA",
+        "ARTHUR LEITE"
+      ],
 
-            "UTI PED": [
-                "ROMÁRIO MASCENA AMORIM LOPES",
-                "ALEXANDRE HENRIQUE COSTA GONÇALVES",
-                "ISABELLY REGINA DE ALBUQUERQUE CORTEZ",
-                "JOSÉ JOCEILSON CRUZ DE ASSIS",
-                "ADEILSON ALVES DE SOUZA",
-                "ARTHUR LEITE"
-            ],
+      "UTI ADULTA": [
+        "DAVID HENRIQUE VIEIRA VILAÇA",
+        "HUGO MARCÍLIO LACAVA DE CARVALHO",
+        "RAFAEL HENRIQUE BARBOSA",
+        "KARLOS MAGNO CARVALHO LEÃO",
+        "FÁBIO HERMANO DINIZ DE MELO"
+      ]
+    };
 
-            "UTI ADULTA": [
-                "DAVID HENRIQUE VIEIRA VILAÇA",
-                "HUGO MARCÍLIO LACAVA DE CARVALHO",
-                "RAFAEL HENRIQUE BARBOSA",
-                "KARLOS MAGNO CARVALHO LEÃO",
-                "FÁBIO HERMANO DINIZ DE MELO",
-            ]
+    Object.keys(setores).forEach(setor => {
+      setores[setor].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    });
 
+    const lista = document.getElementById("lista");
+    const nomesSetores = Object.keys(setores);
+    let setorAtual = 0;
+
+    const dados = {};
+
+    nomesSetores.forEach(setor => {
+      dados[setor] = {};
+
+      setores[setor].forEach(nome => {
+        dados[setor][nome] = {
+          presente: false,
+          obs: "",
+          tipo: ""
         };
+      });
+    });
+
+    function salvarTelaAtual() {
+      const setor = nomesSetores[setorAtual];
+
+      document.querySelectorAll(".medico").forEach(med => {
+        const nome = med.dataset.nome;
+
+        const check = med.querySelector(".check").checked;
+        const obs = med.querySelector(".obs").value;
+        const tipoSelecionado = med.querySelector("input[type='radio']:checked");
+
+        dados[setor][nome] = {
+          presente: check,
+          obs: obs,
+          tipo: tipoSelecionado ? tipoSelecionado.value : ""
+        };
+      });
+    }
 
-        const lista = document.getElementById("lista");
+    function renderizarSetor() {
+      lista.innerHTML = "";
 
-        Object.keys(setores).forEach(setor => {
-            setores[setor].sort((a, b) => a.localeCompare(b, 'pt-BR'));
-        });
+      const setor = nomesSetores[setorAtual];
+
+      const div = document.createElement("div");
+      div.className = "setor";
 
-        for (const setor in setores) {
+      div.innerHTML = `
+        <h2>${setor}</h2>
+        <p class="progresso">Setor ${setorAtual + 1} de ${nomesSetores.length}</p>
+      `;
 
-            let div = document.createElement("div");
-            div.className = "setor";
+      setores[setor].forEach(nome => {
+        const registro = dados[setor][nome];
 
-            div.innerHTML = `<h2>${setor}</h2>`;
+        const item = document.createElement("div");
+        item.className = "medico";
+        item.dataset.nome = nome;
 
-            setores[setor].forEach(nome => {
+        item.innerHTML = `
+          <div class="medico-top">
+            <input type="checkbox" class="check" ${registro.presente ? "checked" : ""}>
+            <strong>${nome}</strong>
+          </div>
 
-                let item = document.createElement("div");
-                item.className = "medico";
+          <div class="obs-container">
+            <input type="text" class="obs" placeholder="Observação (troca, licença, viagem...)" value="${registro.obs.replace(/"/g, '&quot;')}">
 
-                item.innerHTML = `
+            <div class="tipos">
+              <label class="troca">
+                <input type="radio" name="tipo_${setor}_${nome}" value="Troca" ${registro.tipo === "Troca" ? "checked data-checked='true'" : ""}> Troca
+              </label>
 
-<div class="medico-top">
-<input type="checkbox" class="check">
-<strong>${nome}</strong>
-</div>
+              <label class="repasse">
+                <input type="radio" name="tipo_${setor}_${nome}" value="Repasse" ${registro.tipo === "Repasse" ? "checked data-checked='true'" : ""}> Repasse
+              </label>
 
-<!-- 🔥 NOVO BLOCO -->
-<div class="obs-container">
-<input type="text" class="obs" placeholder="Observação (troca, licença, viagem...)">
+              <label class="substituicao">
+                <input type="radio" name="tipo_${setor}_${nome}" value="Substituição" ${registro.tipo === "Substituição" ? "checked data-checked='true'" : ""}> Substituição
+              </label>
+            </div>
+          </div>
+        `;
 
-<div class="tipos">
-<label class="troca"><input type="radio" name="tipo_${nome}" value="Troca"> Troca</label>
-<label class="repasse"><input type="radio" name="tipo_${nome}" value="Repasse"> Repasse</label>
-<label class="substituicao"><input type="radio" name="tipo_${nome}" value="Substituição"> Substituição</label>
-</div>
-</div>
+        div.appendChild(item);
+      });
 
-`;
+      div.innerHTML += `
+        <div class="navegacao">
+          <button class="btn-secundario" onclick="voltarSetor()" ${setorAtual === 0 ? "disabled" : ""}>Voltar</button>
+          <button onclick="proximoSetor()" ${setorAtual === nomesSetores.length - 1 ? "disabled" : ""}>Próximo</button>
+        </div>
+      `;
 
-                div.appendChild(item);
+      lista.appendChild(div);
+    }
 
-            });
+    function proximoSetor() {
+      salvarTelaAtual();
 
-            lista.appendChild(div);
+      if (setorAtual < nomesSetores.length - 1) {
+        setorAtual++;
+        renderizarSetor();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
 
-        }
+    function voltarSetor() {
+      salvarTelaAtual();
 
-        function copiarRelatorio() {
+      if (setorAtual > 0) {
+        setorAtual--;
+        renderizarSetor();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
 
-            const dataPlantao = document.getElementById("dataPlantao").value;
+    function montarTextoRelatorio() {
+      salvarTelaAtual();
 
-            const agora = new Date();
-            const dataGeracao = agora.toLocaleDateString();
-            const horaGeracao = agora.toLocaleTimeString();
+      const dataPlantao = document.getElementById("dataPlantao").value;
 
-            let texto = "";
+      const agora = new Date();
+      const dataGeracao = agora.toLocaleDateString("pt-BR");
+      const horaGeracao = agora.toLocaleTimeString("pt-BR");
 
-            texto += "RELATÓRIO DE PRESENÇA MÉDICA\n\n";
-            texto += "Data do Plantão: " + dataPlantao + "\n";
-            texto += "Gerado em: " + dataGeracao + " às " + horaGeracao + "\n\n";
+      let texto = "";
 
-            document.querySelectorAll(".setor").forEach(setorDiv => {
+      texto += "RELATÓRIO DE PRESENÇA MÉDICA\n\n";
+      texto += "Data do Plantão: " + dataPlantao + "\n";
+      texto += "Gerado em: " + dataGeracao + " às " + horaGeracao + "\n\n";
 
-                const nomeSetor = setorDiv.querySelector("h2").innerText;
+      nomesSetores.forEach(setor => {
+        let bloco = "";
 
-                let bloco = "";
+        setores[setor].forEach(nome => {
+          const registro = dados[setor][nome];
 
-                setorDiv.querySelectorAll(".medico").forEach(med => {
+          if (registro.presente) {
+            bloco += "- " + nome;
 
-                    let nome = med.querySelector("strong").innerText;
-                    let presente = med.querySelector(".check").checked;
-                    let obs = med.querySelector(".obs").value;
+            if (registro.obs) {
+              bloco += " | ";
 
-                    let tipoSel = med.querySelector("input[type='radio']:checked");
-                    let tipo = tipoSel ? tipoSel.value : "";
+              if (registro.tipo) {
+                bloco += registro.tipo + ": ";
+              }
 
-                    if (presente) {
-                        bloco += "- " + nome + (obs ? ` | ${tipo ? tipo + ": " : ""}${obs}` : "") + "\n";
-                    }
-
-                });
-
-                if (bloco !== "") {
-                    texto += nomeSetor + "\n";
-                    texto += bloco + "\n";
-                }
-
-            });
-
-            navigator.clipboard.writeText(texto);
-
-            alert("Relatório copiado para a área de transferência!");
-
-        }
-
-        function gerarPDF() {
-
-            const { jsPDF } = window.jspdf;
-
-            let doc = new jsPDF();
-
-            let y = 10;
-
-            const dataPlantao = document.getElementById("dataPlantao").value;
-
-            const agora = new Date();
-            const dataGeracao = agora.toLocaleDateString();
-            const horaGeracao = agora.toLocaleTimeString();
-
-            doc.setFontSize(16);
-            doc.text("Relatório de Presença Médica", 10, y);
-
-            y += 10;
-
-            doc.setFontSize(11);
-            doc.text("Data do Plantão: " + dataPlantao, 10, y);
-
-            y += 6;
-
-            doc.text("Gerado em: " + dataGeracao + " às " + horaGeracao, 10, y);
-
-            y += 10;
-
-            document.querySelectorAll(".setor").forEach(setorDiv => {
-
-                const nomeSetor = setorDiv.querySelector("h2").innerText;
-
-                doc.setFontSize(13);
-                doc.text(nomeSetor, 10, y);
-
-                y += 6;
-
-                setorDiv.querySelectorAll(".medico").forEach(med => {
-
-                    let nome = med.querySelector("strong").innerText;
-                    let presente = med.querySelector(".check").checked;
-                    let obs = med.querySelector(".obs").value;
-
-                    let tipoSel = med.querySelector("input[type='radio']:checked");
-                    let tipo = tipoSel ? tipoSel.value : "";
-
-                    if (presente) {
-
-                        doc.setFontSize(11);
-                        doc.text("- " + nome + (obs ? ` | ${tipo ? tipo + ": " : ""}${obs}` : ""), 10, y);
-
-                        y += 6;
-
-                        if (y > 280) {
-                            doc.addPage();
-                            y = 10;
-                        }
-
-                    }
-
-                });
-
-                y += 4;
-
-            });
-
-            const dataArquivo = dataPlantao.split("-").reverse().join("-");
-            doc.save(`MÉDICOS PRESENTES (${dataArquivo}).pdf`);
-
-        }
-        // 🔥 PERMITIR DESMARCAR RADIO
-        document.addEventListener("click", function (e) {
-
-            if (e.target.type === "radio") {
-
-                if (e.target.checked && e.target.dataset.checked === "true") {
-
-                    e.target.checked = false
-                    e.target.dataset.checked = "false"
-
-                } else {
-
-                    document.querySelectorAll(`input[name="${e.target.name}"]`).forEach(r => {
-                        r.dataset.checked = "false"
-                    })
-
-                    e.target.dataset.checked = "true"
-
-                }
-
+              bloco += registro.obs;
             }
 
+            bloco += "\n";
+          }
         });
 
-    </script>
+        if (bloco !== "") {
+          texto += setor + "\n";
+          texto += bloco + "\n";
+        }
+      });
+
+      return texto;
+    }
+
+    function copiarRelatorio() {
+      const texto = montarTextoRelatorio();
+
+      navigator.clipboard.writeText(texto).then(() => {
+        alert("Relatório copiado para a área de transferência!");
+      }).catch(() => {
+        alert("Não foi possível copiar automaticamente. Verifique a permissão do navegador.");
+      });
+    }
+
+    function gerarPDF() {
+      salvarTelaAtual();
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      let y = 10;
+
+      const dataPlantao = document.getElementById("dataPlantao").value;
+
+      const agora = new Date();
+      const dataGeracao = agora.toLocaleDateString("pt-BR");
+      const horaGeracao = agora.toLocaleTimeString("pt-BR");
+
+      doc.setFontSize(16);
+      doc.text("Relatório de Presença Médica", 10, y);
+
+      y += 10;
+
+      doc.setFontSize(11);
+      doc.text("Data do Plantão: " + dataPlantao, 10, y);
+
+      y += 6;
+
+      doc.text("Gerado em: " + dataGeracao + " às " + horaGeracao, 10, y);
+
+      y += 10;
+
+      nomesSetores.forEach(setor => {
+        let possuiPresentes = false;
+
+        setores[setor].forEach(nome => {
+          if (dados[setor][nome].presente) {
+            possuiPresentes = true;
+          }
+        });
+
+        if (!possuiPresentes) return;
+
+        if (y > 270) {
+          doc.addPage();
+          y = 10;
+        }
+
+        doc.setFontSize(13);
+        doc.text(setor, 10, y);
+        y += 7;
+
+        setores[setor].forEach(nome => {
+          const registro = dados[setor][nome];
+
+          if (registro.presente) {
+            let linha = "- " + nome;
+
+            if (registro.obs) {
+              linha += " | ";
+
+              if (registro.tipo) {
+                linha += registro.tipo + ": ";
+              }
+
+              linha += registro.obs;
+            }
+
+            const linhas = doc.splitTextToSize(linha, 185);
+
+            doc.setFontSize(11);
+            doc.text(linhas, 10, y);
+
+            y += linhas.length * 6;
+
+            if (y > 280) {
+              doc.addPage();
+              y = 10;
+            }
+          }
+        });
+
+        y += 5;
+      });
+
+      const dataArquivo = dataPlantao.split("-").reverse().join("-");
+      doc.save(`MÉDICOS PRESENTES (${dataArquivo}).pdf`);
+    }
+
+    document.addEventListener("click", function(e) {
+      if (e.target.type === "radio") {
+        if (e.target.checked && e.target.dataset.checked === "true") {
+          e.target.checked = false;
+          e.target.dataset.checked = "false";
+        } else {
+          document.querySelectorAll(`input[name="${e.target.name}"]`).forEach(radio => {
+            radio.dataset.checked = "false";
+          });
+
+          e.target.dataset.checked = "true";
+        }
+      }
+    });
+
+    renderizarSetor();
+  </script>
 
 </body>
-
 </html>

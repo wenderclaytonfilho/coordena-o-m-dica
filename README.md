@@ -4,7 +4,7 @@ Sistema web para apoio à Coordenação Médica Hospitalar, desenvolvido para ot
 
 ## 📋 Sobre o Projeto
 
-O CoordMed foi desenvolvido para centralizar atividades rotineiras da Coordenação Médica, reduzindo processos manuais e facilitando o acompanhamento de informações estratégicas do hospital.
+O CoordMed foi desenvolvido para centralizar atividades rotineiras da Coordenação Médica do Hospital Regional Emília Câmara, reduzindo processos manuais e facilitando o acompanhamento de informações estratégicas do hospital.
 
 A plataforma reúne diversas ferramentas utilizadas no dia a dia da gestão médica, permitindo maior agilidade na tomada de decisões e no controle operacional.
 

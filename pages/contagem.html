@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>Extrator de Evoluções Médicas</title>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -16,59 +16,6 @@
       font-family: Arial, Helvetica, sans-serif;
     }
 
-    footer {
-      margin-top: 30px;
-      text-align: center;
-      padding-top: 20px;
-      border-top: 1px solid #e2e8f0;
-      color: #64748b;
-      font-size: 14px;
-    }
-
-    footer a {
-      color: #0f4c81;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    .logo {
-      max-width: 420px;
-      width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto 20px auto;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    header h1 {
-      color: #0f4c81;
-      font-size: 30px;
-      margin-bottom: 10px;
-    }
-
-    header p {
-      color: #64748b;
-      font-size: 15px;
-    }
-
-    @media (max-width: 768px) {
-      .logo {
-        max-width: 280px;
-      }
-
-      header h1 {
-        font-size: 24px;
-      }
-    }
-
     body {
       min-height: 100vh;
       background: linear-gradient(135deg, #e8f1ff, #f7fbff);
@@ -77,12 +24,20 @@
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1150px;
       margin: auto;
       background: #ffffff;
       border-radius: 18px;
       padding: 28px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .logo {
+      max-width: 420px;
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto 20px auto;
     }
 
     header {
@@ -99,6 +54,7 @@
     header p {
       color: #64748b;
       font-size: 15px;
+      line-height: 1.4;
     }
 
     .card {
@@ -148,64 +104,13 @@
       cursor: not-allowed;
     }
 
-    .info-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 20px;
-    }
-
-    .info-box {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 16px;
-    }
-
-    .info-box strong {
-      display: block;
-      color: #0f4c81;
-      font-size: 22px;
-      margin-bottom: 4px;
-    }
-
-    .info-box span {
-      color: #64748b;
-      font-size: 14px;
-    }
-
-    .setores {
-      margin-top: 18px;
-    }
-
-    .setores h3 {
-      color: #0f4c81;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-
-    .setores ul {
-      list-style: none;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 8px;
-    }
-
-    .setores li {
-      background: #e0f2fe;
-      color: #075985;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
     .status {
       margin-top: 16px;
       padding: 14px;
       border-radius: 12px;
       display: none;
       font-size: 14px;
+      line-height: 1.4;
     }
 
     .status.ok {
@@ -220,10 +125,62 @@
       color: #991b1b;
     }
 
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .info-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .info-box strong {
+      display: block;
+      color: #0f4c81;
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .info-box span {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .section-title {
+      color: #0f4c81;
+      margin-bottom: 12px;
+      font-size: 17px;
+    }
+
+    .list-grid {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .list-grid li {
+      background: #e0f2fe;
+      color: #075985;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .ignored li {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
     .preview {
-      margin-top: 20px;
-      overflow-x: auto;
       display: none;
+      overflow-x: auto;
     }
 
     table {
@@ -231,6 +188,7 @@
       border-collapse: collapse;
       font-size: 13px;
       background: white;
+      min-width: 850px;
     }
 
     th {
@@ -247,14 +205,30 @@
       white-space: nowrap;
     }
 
+    .text-right {
+      text-align: right;
+    }
+
     footer {
       text-align: center;
       margin-top: 24px;
       color: #94a3b8;
       font-size: 13px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
     }
 
-    @media (max-width: 600px) {
+    footer a {
+      color: #0f4c81;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
       body {
         padding: 10px;
       }
@@ -264,8 +238,16 @@
         border-radius: 14px;
       }
 
+      .logo {
+        max-width: 280px;
+      }
+
       header h1 {
         font-size: 22px;
+      }
+
+      header p {
+        font-size: 14px;
       }
 
       button {
@@ -278,26 +260,26 @@
 <body>
   <div class="container">
     <header>
-      <img src="../logo_hrec.png" alt="HREC" class="logo">
+      <img src="../logo_hrec.png" alt="HREC" class="logo" onerror="this.style.display='none'">
 
       <h1>Extrator de Evoluções Médicas</h1>
 
       <p>
-        Importe a planilha de evoluções e gere uma nova pasta de trabalho
-        separada por médico.
+        Importe a planilha de evoluções. O sistema remove duplicados por paciente/dia,
+        ignora estatutários, separa por médico e gera resumo por dia e por clínica.
       </p>
     </header>
 
-    <div class="card">
+    <section class="card">
       <label for="arquivo">Selecionar arquivo Excel</label>
       <input type="file" id="arquivo" accept=".xlsx,.xls" />
 
       <button id="processar" disabled>Processar e gerar planilha</button>
 
       <div id="status" class="status"></div>
-    </div>
+    </section>
 
-    <div class="card">
+    <section class="card">
       <div class="info-grid">
         <div class="info-box">
           <strong id="totalOriginal">0</strong>
@@ -315,35 +297,60 @@
         </div>
 
         <div class="info-box">
+          <strong id="totalIgnorados">0</strong>
+          <span>Estatutários ignorados</span>
+        </div>
+
+        <div class="info-box">
           <strong id="totalMedicos">0</strong>
           <span>Médicos / grupos</span>
         </div>
       </div>
+    </section>
 
-      <div class="setores">
-        <h3>Setores considerados</h3>
-        <ul>
-          <li>ALOJAMENTO CONJUNTO</li>
-          <li>CLÍNICA CIRÚRGICA</li>
-          <li>CLÍNICA MATERNO</li>
-          <li>CLÍNICA MÉDICA</li>
-          <li>CLÍNICA PEDIÁTRICA</li>
-        </ul>
-      </div>
-    </div>
+    <section class="card">
+      <h3 class="section-title">Clínicas consideradas</h3>
 
-    <div class="card preview" id="preview">
-      <h3 style="margin-bottom: 12px; color:#0f4c81;">Prévia do processamento</h3>
+      <ul class="list-grid">
+        <li>ALOJAMENTO CONJUNTO</li>
+        <li>CLÍNICA CIRÚRGICA</li>
+        <li>CLÍNICA MATERNO</li>
+        <li>CLÍNICA MÉDICA</li>
+        <li>CLÍNICA PEDIÁTRICA</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h3 class="section-title">Estatutários ignorados</h3>
+
+      <ul class="list-grid ignored">
+        <li>SAULO MOISES SANTOS SILVEIRA</li>
+        <li>FRANCISCO ERLANDIO DE MELO JUNIOR</li>
+        <li>RENATA RAQUEL DE OLIVEIRA RABELO MARINHO</li>
+        <li>MICHELLINE NUNES ALVES DE SOUSA</li>
+      </ul>
+    </section>
+
+    <section class="card preview" id="preview">
+      <h3 class="section-title">Prévia — Resumo por Dia e Clínica</h3>
+
       <table>
         <thead>
           <tr>
+            <th>Data</th>
             <th>Médico / Grupo</th>
-            <th>Total de evoluções</th>
+            <th class="text-right">Alojamento Conjunto</th>
+            <th class="text-right">Clínica Cirúrgica</th>
+            <th class="text-right">Clínica Materno</th>
+            <th class="text-right">Clínica Médica</th>
+            <th class="text-right">Clínica Pediátrica</th>
+            <th class="text-right">Total</th>
           </tr>
         </thead>
+
         <tbody id="tabelaResumo"></tbody>
       </table>
-    </div>
+    </section>
 
     <footer>
       <p>
@@ -363,6 +370,7 @@
     const totalOriginal = document.getElementById("totalOriginal");
     const totalFiltrado = document.getElementById("totalFiltrado");
     const totalDuplicados = document.getElementById("totalDuplicados");
+    const totalIgnorados = document.getElementById("totalIgnorados");
     const totalMedicos = document.getElementById("totalMedicos");
 
     const preview = document.getElementById("preview");
@@ -370,24 +378,28 @@
 
     let arquivoSelecionado = null;
 
-    const setoresPermitidos = [
+    const CLINICAS = [
       "ALOJAMENTO CONJUNTO",
-      "CLINICA CIRURGICA",
       "CLÍNICA CIRÚRGICA",
-      "CLINICA MATERNO",
       "CLÍNICA MATERNO",
-      "CLINICA MEDICA",
       "CLÍNICA MÉDICA",
-      "CLINICA PEDIATRICA",
       "CLÍNICA PEDIÁTRICA"
     ];
 
-    const nomesMendes = [
+    const NOMES_MENDES = [
       "MESSIAS",
       "ANDRE",
       "ANDRÉ",
       "BARBARA",
       "BÁRBARA"
+    ];
+
+    const ESTATUTARIOS_IGNORADOS = [
+      "SAULO MOISES SANTOS SILVEIRA",
+      "FRANCISCO ERLANDIO DE MELO JUNIOR",
+      "RENATA RAQUEL DE OLIVEIRA RABELO MARINHO",
+      "MICHELLINE NUNES ALVES DE SOUSA",
+      "ROSA ELIZABETH"
     ];
 
     inputArquivo.addEventListener("change", function () {
@@ -409,75 +421,41 @@
     }
 
     function normalizarTexto(texto) {
-      if (!texto) return "";
-
-      return String(texto)
+      return String(texto || "")
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .trim()
         .toUpperCase();
     }
 
-    function formatarDataExcel(valor) {
-      if (!valor) return "";
+    function normalizarNomeClinica(nome) {
+      const texto = normalizarTexto(nome);
 
-      if (valor instanceof Date) {
-        return valor;
-      }
+      if (texto.includes("ALOJAMENTO")) return "ALOJAMENTO CONJUNTO";
+      if (texto.includes("CIRURGICA")) return "CLÍNICA CIRÚRGICA";
+      if (texto.includes("MATERNO")) return "CLÍNICA MATERNO";
+      if (texto.includes("MEDICA")) return "CLÍNICA MÉDICA";
+      if (texto.includes("PEDIATRICA")) return "CLÍNICA PEDIÁTRICA";
 
-      if (typeof valor === "number") {
-        const data = XLSX.SSF.parse_date_code(valor);
-        return new Date(data.y, data.m - 1, data.d, data.H || 0, data.M || 0, data.S || 0);
-      }
-
-      const texto = String(valor).trim();
-
-      const partes = texto.match(/(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?/);
-
-      if (partes) {
-        const dia = Number(partes[1]);
-        const mes = Number(partes[2]) - 1;
-        const ano = Number(partes[3]);
-        const hora = Number(partes[4] || 0);
-        const minuto = Number(partes[5] || 0);
-        const segundo = Number(partes[6] || 0);
-
-        return new Date(ano, mes, dia, hora, minuto, segundo);
-      }
-
-      return new Date(texto);
+      return "";
     }
 
-    function dataParaComparacao(data) {
-      const d = formatarDataExcel(data);
-
-      if (!(d instanceof Date) || isNaN(d)) return "";
-
-      const ano = d.getFullYear();
-      const mes = String(d.getMonth() + 1).padStart(2, "0");
-      const dia = String(d.getDate()).padStart(2, "0");
-
-      return `${ano}-${mes}-${dia}`;
+    function ehClinicaPermitida(nome) {
+      return CLINICAS.includes(normalizarNomeClinica(nome));
     }
 
-    function dataParaExibicao(data) {
-      const d = formatarDataExcel(data);
+    function ehEstatutarioIgnorado(nomeMedico) {
+      const medico = normalizarTexto(nomeMedico);
 
-      if (!(d instanceof Date) || isNaN(d)) return data || "";
-
-      const dia = String(d.getDate()).padStart(2, "0");
-      const mes = String(d.getMonth() + 1).padStart(2, "0");
-      const ano = d.getFullYear();
-      const hora = String(d.getHours()).padStart(2, "0");
-      const minuto = String(d.getMinutes()).padStart(2, "0");
-
-      return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+      return ESTATUTARIOS_IGNORADOS.some(nome => {
+        return medico === normalizarTexto(nome) || medico.includes(normalizarTexto(nome));
+      });
     }
 
     function obterMedicoAgrupado(nomeMedico) {
-      const medicoNormalizado = normalizarTexto(nomeMedico);
+      const medico = normalizarTexto(nomeMedico);
 
-      const ehMendes = nomesMendes.some(nome => medicoNormalizado.includes(nome));
+      const ehMendes = NOMES_MENDES.some(nome => medico.includes(normalizarTexto(nome)));
 
       if (ehMendes) {
         return "MENDES SERVIÇOS MÉDICOS";
@@ -486,8 +464,86 @@
       return String(nomeMedico || "SEM MÉDICO").trim().toUpperCase();
     }
 
+    function formatarDataExcel(valor) {
+      if (!valor) return null;
+
+      if (valor instanceof Date) {
+        return valor;
+      }
+
+      if (typeof valor === "number") {
+        const data = XLSX.SSF.parse_date_code(valor);
+
+        if (!data) return null;
+
+        return new Date(
+          data.y,
+          data.m - 1,
+          data.d,
+          data.H || 0,
+          data.M || 0,
+          data.S || 0
+        );
+      }
+
+      const texto = String(valor).trim();
+
+      const partes = texto.match(
+        /(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/
+      );
+
+      if (partes) {
+        const dia = Number(partes[1]);
+        const mes = Number(partes[2]) - 1;
+        let ano = Number(partes[3]);
+
+        if (ano < 100) ano += 2000;
+
+        const hora = Number(partes[4] || 0);
+        const minuto = Number(partes[5] || 0);
+        const segundo = Number(partes[6] || 0);
+
+        return new Date(ano, mes, dia, hora, minuto, segundo);
+      }
+
+      const data = new Date(texto);
+
+      return isNaN(data) ? null : data;
+    }
+
+    function dataParaChave(valor) {
+      const data = formatarDataExcel(valor);
+
+      if (!(data instanceof Date) || isNaN(data)) return "";
+
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2, "0");
+      const dia = String(data.getDate()).padStart(2, "0");
+
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    function dataParaExibicao(valor, incluirHora = true) {
+      const data = formatarDataExcel(valor);
+
+      if (!(data instanceof Date) || isNaN(data)) return valor || "";
+
+      const dia = String(data.getDate()).padStart(2, "0");
+      const mes = String(data.getMonth() + 1).padStart(2, "0");
+      const ano = data.getFullYear();
+
+      if (!incluirHora) {
+        return `${dia}/${mes}/${ano}`;
+      }
+
+      const hora = String(data.getHours()).padStart(2, "0");
+      const minuto = String(data.getMinutes()).padStart(2, "0");
+
+      return `${dia}/${mes}/${ano} ${hora}:${minuto}`;
+    }
+
     function nomeAbaSeguro(nome) {
-      return nome
+      return String(nome || "ABA")
         .replace(/[\\\/\?\*\[\]\:]/g, "")
         .substring(0, 31);
     }
@@ -503,6 +559,7 @@
       leitor.onload = function (evento) {
         try {
           const dados = new Uint8Array(evento.target.result);
+
           const workbook = XLSX.read(dados, {
             type: "array",
             cellDates: true
@@ -513,114 +570,241 @@
 
           const linhas = XLSX.utils.sheet_to_json(planilha, {
             defval: "",
-            raw: false
+            raw: true
           });
 
           totalOriginal.textContent = linhas.length;
 
-          const filtradasPorSetor = linhas.filter(linha => {
-            const setor = normalizarTexto(linha.STR_NOME);
-            return setoresPermitidos
-              .map(normalizarTexto)
-              .includes(setor);
+          const linhasPermitidas = linhas
+            .filter(linha => ehClinicaPermitida(linha.STR_NOME))
+            .sort((a, b) => {
+              const dataA = formatarDataExcel(a.DT_EVOL);
+              const dataB = formatarDataExcel(b.DT_EVOL);
+
+              return (dataA || 0) - (dataB || 0);
+            });
+
+          const resultado = removerDuplicadosEIgnorarEstatutarios(linhasPermitidas);
+
+          const grupos = agruparPorMedico(resultado.evolucoesValidas);
+          const resumoGeral = criarResumoGeral(grupos);
+          const resumoPorDia = criarResumoPorDiaClinica(resultado.evolucoesValidas);
+          const resumoDetalhado = criarResumoPorDiaClinicaDetalhado(resultado.evolucoesValidas);
+
+          gerarWorkbook({
+            grupos,
+            resumoGeral,
+            resumoPorDia,
+            resumoDetalhado,
+            duplicados: resultado.duplicados,
+            ignorados: resultado.ignorados,
+            evolucoesValidas: resultado.evolucoesValidas
           });
 
-          const ordenadas = filtradasPorSetor.sort((a, b) => {
-            const dataA = formatarDataExcel(a.DT_EVOL);
-            const dataB = formatarDataExcel(b.DT_EVOL);
-            return dataA - dataB;
-          });
-
-          const mapaPrimeiras = new Map();
-          const evolucoesValidas = [];
-          const duplicados = [];
-
-          ordenadas.forEach(linha => {
-            const paciente = normalizarTexto(linha.NOME);
-            const dataDia = dataParaComparacao(linha.DT_EVOL);
-            const chave = `${paciente}|${dataDia}`;
-
-            const medicoAgrupado = obterMedicoAgrupado(linha.MEDICO);
-
-            const linhaFormatada = {
-              REG: linha.REG,
-              NOME: linha.NOME,
-              DT_NASC: linha.DT_NASC,
-              DT_EVOL: dataParaExibicao(linha.DT_EVOL),
-              SEXO: linha.SEXO,
-              CNS: linha.CNS,
-              MEDICO: linha.MEDICO,
-              MEDICO_AGRUPADO: medicoAgrupado,
-              STR_NOME: linha.STR_NOME
-            };
-
-            if (!mapaPrimeiras.has(chave)) {
-              mapaPrimeiras.set(chave, linhaFormatada);
-              evolucoesValidas.push(linhaFormatada);
-            } else {
-              const primeira = mapaPrimeiras.get(chave);
-
-              duplicados.push({
-                REG: linha.REG,
-                PACIENTE: linha.NOME,
-                SETOR: linha.STR_NOME,
-                DATA_EVOLUCAO_DUPLICADA: dataParaExibicao(linha.DT_EVOL),
-                MEDICO_DUPLICADO: linha.MEDICO,
-                CONTABILIZADO_PARA: primeira.MEDICO_AGRUPADO,
-                MEDICO_ORIGINAL_CONTABILIZADO: primeira.MEDICO,
-                DATA_EVOLUCAO_CONTABILIZADA: primeira.DT_EVOL
-              });
-            }
-          });
-
-          const grupos = {};
-
-          evolucoesValidas.forEach(linha => {
-            const medico = linha.MEDICO_AGRUPADO;
-
-            if (!grupos[medico]) {
-              grupos[medico] = [];
-            }
-
-            grupos[medico].push(linha);
-          });
-
-          gerarWorkbook(grupos, evolucoesValidas, duplicados);
-
-          totalFiltrado.textContent = evolucoesValidas.length;
-          totalDuplicados.textContent = duplicados.length;
+          totalFiltrado.textContent = resultado.evolucoesValidas.length;
+          totalDuplicados.textContent = resultado.duplicados.length;
+          totalIgnorados.textContent = resultado.ignorados.length;
           totalMedicos.textContent = Object.keys(grupos).length;
 
-          preencherPreview(grupos);
+          preencherPreview(resumoPorDia);
 
           mostrarStatus("Planilha gerada com sucesso!", "ok");
 
         } catch (erro) {
           console.error(erro);
-          mostrarStatus("Erro ao processar o arquivo. Confira se as colunas estão corretas.", "erro");
+          mostrarStatus("Erro ao processar o arquivo. Confira se as colunas REG, NOME, DT_EVOL, MEDICO e STR_NOME existem.", "erro");
         }
       };
 
       leitor.readAsArrayBuffer(arquivoSelecionado);
     }
 
-    function gerarWorkbook(grupos, evolucoesValidas, duplicados) {
-      const novoWorkbook = XLSX.utils.book_new();
+    function removerDuplicadosEIgnorarEstatutarios(linhas) {
+      const mapaPrimeiras = new Map();
+      const evolucoesValidas = [];
+      const duplicados = [];
+      const ignorados = [];
 
-      const resumo = Object.keys(grupos)
+      linhas.forEach(linha => {
+        const medicoOriginal = String(linha.MEDICO || "").trim();
+
+        const linhaBase = formatarLinha(linha);
+
+        if (ehEstatutarioIgnorado(medicoOriginal)) {
+          ignorados.push({
+            REG: linha.REG,
+            PACIENTE: linha.NOME,
+            SETOR: linha.STR_NOME,
+            DATA_EVOLUCAO: dataParaExibicao(linha.DT_EVOL),
+            MEDICO_IGNORADO: medicoOriginal,
+            MOTIVO: "ESTATUTÁRIO - NÃO CONTABILIZADO"
+          });
+
+          return;
+        }
+
+        const paciente = normalizarTexto(linha.NOME);
+        const dataDia = dataParaChave(linha.DT_EVOL);
+        const chave = `${paciente}|${dataDia}`;
+
+        if (!mapaPrimeiras.has(chave)) {
+          mapaPrimeiras.set(chave, linhaBase);
+          evolucoesValidas.push(linhaBase);
+        } else {
+          const primeira = mapaPrimeiras.get(chave);
+
+          duplicados.push({
+            REG: linha.REG,
+            PACIENTE: linha.NOME,
+            SETOR: linha.STR_NOME,
+            DATA_EVOLUCAO_DUPLICADA: dataParaExibicao(linha.DT_EVOL),
+            MEDICO_DUPLICADO: medicoOriginal,
+            CONTABILIZADO_PARA: primeira.MEDICO_AGRUPADO,
+            MEDICO_ORIGINAL_CONTABILIZADO: primeira.MEDICO,
+            DATA_EVOLUCAO_CONTABILIZADA: primeira.DT_EVOL
+          });
+        }
+      });
+
+      return {
+        evolucoesValidas,
+        duplicados,
+        ignorados
+      };
+    }
+
+    function formatarLinha(linha) {
+      return {
+        REG: linha.REG,
+        NOME: linha.NOME,
+        DT_NASC: dataParaExibicao(linha.DT_NASC, false),
+        DT_EVOL: dataParaExibicao(linha.DT_EVOL),
+        DATA_DIA: dataParaExibicao(linha.DT_EVOL, false),
+        DATA_CHAVE: dataParaChave(linha.DT_EVOL),
+        SEXO: linha.SEXO,
+        CNS: linha.CNS,
+        MEDICO: linha.MEDICO,
+        MEDICO_AGRUPADO: obterMedicoAgrupado(linha.MEDICO),
+        STR_NOME: normalizarNomeClinica(linha.STR_NOME)
+      };
+    }
+
+    function agruparPorMedico(evolucoesValidas) {
+      const grupos = {};
+
+      evolucoesValidas.forEach(linha => {
+        const medico = linha.MEDICO_AGRUPADO;
+
+        if (!grupos[medico]) {
+          grupos[medico] = [];
+        }
+
+        grupos[medico].push(linha);
+      });
+
+      return grupos;
+    }
+
+    function criarResumoGeral(grupos) {
+      return Object.keys(grupos)
         .sort()
         .map(medico => ({
           "MÉDICO / GRUPO": medico,
           "TOTAL DE EVOLUÇÕES": grupos[medico].length
         }));
+    }
 
-      const abaResumo = XLSX.utils.json_to_sheet(resumo);
-      XLSX.utils.book_append_sheet(novoWorkbook, abaResumo, "Resumo");
+    function criarResumoPorDiaClinica(evolucoesValidas) {
+      const mapa = {};
 
-      Object.keys(grupos)
+      evolucoesValidas.forEach(item => {
+        const data = item.DATA_DIA;
+        const medico = item.MEDICO_AGRUPADO;
+        const clinica = item.STR_NOME;
+        const chave = `${item.DATA_CHAVE}|${medico}`;
+
+        if (!mapa[chave]) {
+          mapa[chave] = {
+            DATA: data,
+            DATA_CHAVE: item.DATA_CHAVE,
+            "MÉDICO / GRUPO": medico,
+            "ALOJAMENTO CONJUNTO": 0,
+            "CLÍNICA CIRÚRGICA": 0,
+            "CLÍNICA MATERNO": 0,
+            "CLÍNICA MÉDICA": 0,
+            "CLÍNICA PEDIÁTRICA": 0,
+            TOTAL: 0
+          };
+        }
+
+        if (CLINICAS.includes(clinica)) {
+          mapa[chave][clinica]++;
+          mapa[chave].TOTAL++;
+        }
+      });
+
+      return Object.values(mapa)
+        .sort((a, b) => {
+          if (a.DATA_CHAVE !== b.DATA_CHAVE) {
+            return a.DATA_CHAVE.localeCompare(b.DATA_CHAVE);
+          }
+
+          return a["MÉDICO / GRUPO"].localeCompare(b["MÉDICO / GRUPO"]);
+        })
+        .map(item => {
+          const { DATA_CHAVE, ...linha } = item;
+          return linha;
+        });
+    }
+
+    function criarResumoPorDiaClinicaDetalhado(evolucoesValidas) {
+      const mapa = {};
+
+      evolucoesValidas.forEach(item => {
+        const chave = `${item.DATA_CHAVE}|${item.STR_NOME}|${item.MEDICO_AGRUPADO}`;
+
+        if (!mapa[chave]) {
+          mapa[chave] = {
+            DATA: item.DATA_DIA,
+            DATA_CHAVE: item.DATA_CHAVE,
+            CLÍNICA: item.STR_NOME,
+            "MÉDICO / GRUPO": item.MEDICO_AGRUPADO,
+            TOTAL: 0
+          };
+        }
+
+        mapa[chave].TOTAL++;
+      });
+
+      return Object.values(mapa)
+        .sort((a, b) => {
+          if (a.DATA_CHAVE !== b.DATA_CHAVE) {
+            return a.DATA_CHAVE.localeCompare(b.DATA_CHAVE);
+          }
+
+          if (a.CLÍNICA !== b.CLÍNICA) {
+            return a.CLÍNICA.localeCompare(b.CLÍNICA);
+          }
+
+          return a["MÉDICO / GRUPO"].localeCompare(b["MÉDICO / GRUPO"]);
+        })
+        .map(item => {
+          const { DATA_CHAVE, ...linha } = item;
+          return linha;
+        });
+    }
+
+    function gerarWorkbook(dados) {
+      const novoWorkbook = XLSX.utils.book_new();
+
+      adicionarAba(novoWorkbook, dados.resumoGeral, "Resumo Geral");
+      adicionarAba(novoWorkbook, dados.resumoPorDia, "Resumo por Dia");
+      adicionarAba(novoWorkbook, dados.resumoDetalhado, "Dia Clinica Detalhado");
+
+      Object.keys(dados.grupos)
         .sort()
         .forEach(medico => {
-          const dadosMedico = grupos[medico].map(item => ({
+          const linhasMedico = dados.grupos[medico].map(item => ({
             REG: item.REG,
             NOME: item.NOME,
             DT_NASC: item.DT_NASC,
@@ -631,14 +815,13 @@
             SETOR: item.STR_NOME
           }));
 
-          const aba = XLSX.utils.json_to_sheet(dadosMedico);
-          XLSX.utils.book_append_sheet(novoWorkbook, aba, nomeAbaSeguro(medico));
+          adicionarAba(novoWorkbook, linhasMedico, nomeAbaSeguro(medico));
         });
 
-      const abaDuplicados = XLSX.utils.json_to_sheet(duplicados);
-      XLSX.utils.book_append_sheet(novoWorkbook, abaDuplicados, "Duplicados");
+      adicionarAba(novoWorkbook, dados.duplicados, "Duplicados");
+      adicionarAba(novoWorkbook, dados.ignorados, "Estatutarios Ignorados");
 
-      const periodo = identificarPeriodo(evolucoesValidas);
+      const periodo = identificarPeriodo(dados.evolucoesValidas);
 
       const nomeArquivo = periodo
         ? `Evolucoes_${periodo}.xlsx`
@@ -647,49 +830,69 @@
       XLSX.writeFile(novoWorkbook, nomeArquivo);
     }
 
+    function adicionarAba(workbook, dados, nome) {
+      const aba = XLSX.utils.json_to_sheet(dados.length ? dados : [{}]);
+      ajustarLarguraColunas(aba, dados);
+      XLSX.utils.book_append_sheet(workbook, aba, nomeAbaSeguro(nome));
+    }
+
+    function ajustarLarguraColunas(sheet, dados) {
+      if (!dados || !dados.length) return;
+
+      const colunas = Object.keys(dados[0]);
+
+      sheet["!cols"] = colunas.map(coluna => {
+        const maior = Math.max(
+          coluna.length,
+          ...dados.map(linha => String(linha[coluna] || "").length)
+        );
+
+        return {
+          wch: Math.min(Math.max(maior + 2, 12), 45)
+        };
+      });
+    }
+
     function identificarPeriodo(dados) {
       if (!dados.length) return "";
 
       const datas = dados
-        .map(item => formatarDataExcel(item.DT_EVOL))
-        .filter(data => data instanceof Date && !isNaN(data))
-        .sort((a, b) => a - b);
+        .map(item => item.DATA_CHAVE)
+        .filter(Boolean)
+        .sort();
 
       if (!datas.length) return "";
 
-      const inicio = datas[0];
-      const fim = datas[datas.length - 1];
-
-      function formatar(data) {
-        const dia = String(data.getDate()).padStart(2, "0");
-        const mes = String(data.getMonth() + 1).padStart(2, "0");
-        const ano = data.getFullYear();
-
+      function converter(dataChave) {
+        const [ano, mes, dia] = dataChave.split("-");
         return `${dia}-${mes}-${ano}`;
       }
 
-      return `${formatar(inicio)}_a_${formatar(fim)}`;
+      return `${converter(datas[0])}_a_${converter(datas[datas.length - 1])}`;
     }
 
-    function preencherPreview(grupos) {
+    function preencherPreview(resumoPorDia) {
       tabelaResumo.innerHTML = "";
 
-      Object.keys(grupos)
-        .sort()
-        .forEach(medico => {
-          const tr = document.createElement("tr");
+      resumoPorDia.forEach(item => {
+        const tr = document.createElement("tr");
 
-          tr.innerHTML = `
-            <td>${medico}</td>
-            <td>${grupos[medico].length}</td>
-          `;
+        tr.innerHTML = `
+          <td>${item.DATA}</td>
+          <td>${item["MÉDICO / GRUPO"]}</td>
+          <td class="text-right">${item["ALOJAMENTO CONJUNTO"]}</td>
+          <td class="text-right">${item["CLÍNICA CIRÚRGICA"]}</td>
+          <td class="text-right">${item["CLÍNICA MATERNO"]}</td>
+          <td class="text-right">${item["CLÍNICA MÉDICA"]}</td>
+          <td class="text-right">${item["CLÍNICA PEDIÁTRICA"]}</td>
+          <td class="text-right"><strong>${item.TOTAL}</strong></td>
+        `;
 
-          tabelaResumo.appendChild(tr);
-        });
+        tabelaResumo.appendChild(tr);
+      });
 
       preview.style.display = "block";
     }
   </script>
 </body>
-
 </html>

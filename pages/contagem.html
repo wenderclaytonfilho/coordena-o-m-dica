@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -431,17 +432,20 @@
     function normalizarNomeClinica(nome) {
       const texto = normalizarTexto(nome);
 
-      if (texto.includes("ALOJAMENTO")) return "ALOJAMENTO CONJUNTO";
-      if (texto.includes("CIRURGICA")) return "CLÍNICA CIRÚRGICA";
-      if (texto.includes("MATERNO")) return "CLÍNICA MATERNO";
-      if (texto.includes("MEDICA")) return "CLÍNICA MÉDICA";
-      if (texto.includes("PEDIATRICA")) return "CLÍNICA PEDIÁTRICA";
+      const mapa = {
+        "ALOJAMENTO CONJUNTO": "ALOJAMENTO CONJUNTO",
+        "CLINICA CIRURGICA": "CLÍNICA CIRÚRGICA",
+        "CLINICA MATERNO": "CLÍNICA MATERNO",
+        "CLINICA MEDICA": "CLÍNICA MÉDICA",
+        "CLINICA PEDIATRICA": "CLÍNICA PEDIÁTRICA"
+      };
 
-      return "";
+      return mapa[texto] || "";
     }
 
     function ehClinicaPermitida(nome) {
-      return CLINICAS.includes(normalizarNomeClinica(nome));
+      const clinica = normalizarNomeClinica(nome);
+      return CLINICAS.includes(clinica);
     }
 
     function ehEstatutarioIgnorado(nomeMedico) {
@@ -626,9 +630,15 @@
       const ignorados = [];
 
       linhas.forEach(linha => {
-        const medicoOriginal = String(linha.MEDICO || "").trim();
+        const clinicaNormalizada = normalizarNomeClinica(linha.STR_NOME);
 
-        const linhaBase = formatarLinha(linha);
+        // Segurança extra: se não for uma das clínicas permitidas, ignora totalmente.
+        // Não entra em válida, não entra em duplicado e não interfere na primeira evolução.
+        if (!CLINICAS.includes(clinicaNormalizada)) {
+          return;
+        }
+
+        const medicoOriginal = String(linha.MEDICO || "").trim();
 
         if (ehEstatutarioIgnorado(medicoOriginal)) {
           ignorados.push({
@@ -643,6 +653,8 @@
           return;
         }
 
+        const linhaBase = formatarLinha(linha);
+
         const paciente = normalizarTexto(linha.NOME);
         const dataDia = dataParaChave(linha.DT_EVOL);
         const chave = `${paciente}|${dataDia}`;
@@ -656,11 +668,12 @@
           duplicados.push({
             REG: linha.REG,
             PACIENTE: linha.NOME,
-            SETOR: linha.STR_NOME,
+            SETOR: clinicaNormalizada,
             DATA_EVOLUCAO_DUPLICADA: dataParaExibicao(linha.DT_EVOL),
             MEDICO_DUPLICADO: medicoOriginal,
             CONTABILIZADO_PARA: primeira.MEDICO_AGRUPADO,
             MEDICO_ORIGINAL_CONTABILIZADO: primeira.MEDICO,
+            SETOR_CONTABILIZADO: primeira.STR_NOME,
             DATA_EVOLUCAO_CONTABILIZADA: primeira.DT_EVOL
           });
         }
@@ -895,4 +908,5 @@
     }
   </script>
 </body>
+
 </html>

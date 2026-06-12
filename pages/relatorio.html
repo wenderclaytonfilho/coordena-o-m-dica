@@ -1,56 +1,46 @@
+Claro, Wender. Segue o HTML completo atualizado, com a correção do Salvar Imagem para não sobrepor a logo nem cortar a escala.
+
+A imagem da logo precisa estar na mesma pasta do HTML com o nome:
+
+logo_hrec.jpg
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Gerador de Escala Diária - HREC</title>
-
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
   <style>
     * {
       box-sizing: border-box;
       font-family: Arial, Helvetica, sans-serif;
     }
-
     body {
       margin: 0;
       background: #eef3f8;
       color: #1f2937;
     }
-
     header {
-      background: linear-gradient(135deg, #fdfeff, #f4faf7);
+      background: linear-gradient(135deg, #0f4c81, #198754);
       color: white;
       padding: 24px 16px;
       text-align: center;
     }
-
     header h1 {
       margin: 0;
       font-size: 24px;
     }
-
     header p {
       margin: 8px 0 0;
       font-size: 14px;
       opacity: 0.95;
     }
-
-    img{
-      width: 50%;
-      height: 50%;
-    }
-
     main {
       max-width: 980px;
       margin: 20px auto;
       padding: 0 14px 40px;
     }
-
     .card {
       background: white;
       border-radius: 16px;
@@ -58,13 +48,11 @@
       margin-bottom: 16px;
       box-shadow: 0 8px 24px rgba(15, 76, 129, 0.12);
     }
-
     label {
       font-weight: bold;
       display: block;
       margin-bottom: 8px;
     }
-
     input,
     select,
     button,
@@ -75,11 +63,9 @@
       border: 1px solid #cbd5e1;
       font-size: 15px;
     }
-
     textarea {
       resize: vertical;
     }
-
     button {
       border: none;
       background: #0f4c81;
@@ -89,41 +75,33 @@
       margin-top: 10px;
       transition: 0.2s;
     }
-
     button:hover {
       filter: brightness(0.95);
       transform: translateY(-1px);
     }
-
     button.secondary {
       background: #198754;
     }
-
     button.whatsapp {
       background: #25d366;
       color: #063b1f;
     }
-
     button.image-btn {
       background: #6d28d9;
     }
-
     button.danger {
       background: #dc2626;
     }
-
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
     }
-
     .actions {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
     }
-
     .hint {
       background: #fff7ed;
       border-left: 5px solid #f97316;
@@ -133,7 +111,6 @@
       margin-top: 10px;
       line-height: 1.4;
     }
-
     .success {
       background: #ecfdf5;
       border-left: 5px solid #198754;
@@ -143,57 +120,50 @@
       margin-top: 10px;
       display: none;
     }
-
     .editor-setores {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
       margin-top: 14px;
     }
-
     .editor-setor {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 12px;
       padding: 12px;
     }
-
     .editor-setor label {
       color: #0f4c81;
       font-size: 14px;
       margin-bottom: 6px;
     }
-
     .editor-setor textarea {
       min-height: 100px;
       font-size: 13px;
       text-transform: uppercase;
     }
-
     .editor-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       margin-top: 12px;
     }
-
     .preview {
       background: white;
       padding: 16px;
       border: 1px solid #111827;
-      width: 165mm;
+      width: 155mm;
       max-width: 100%;
       margin: 0 auto;
+      overflow: visible;
     }
-
     .logo-doc {
       width: 100%;
-      max-height: 62px;
+      height: 62px;
       object-fit: contain;
       margin-bottom: 8px;
       display: block;
     }
-
     .doc-header {
       text-align: center;
       border-bottom: 2px solid #111827;
@@ -202,21 +172,18 @@
       font-size: 15px;
       font-weight: bold;
     }
-
     .doc-title {
       text-align: center;
       font-weight: bold;
       margin: 12px 0;
       font-size: 15px;
     }
-
     .sector-table,
     .evo-table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 10px;
     }
-
     .sector-table td,
     .evo-table td,
     .evo-table th {
@@ -224,43 +191,36 @@
       padding: 6px;
       text-align: center;
     }
-
     .sector-title {
       font-weight: bold;
       background: #f3f4f6;
       text-transform: uppercase;
       font-size: 14px;
     }
-
     .doctor {
       font-size: 12px;
       text-transform: uppercase;
     }
-
     .empty {
       color: #9ca3af;
       font-style: italic;
     }
-
     footer {
       text-align: center;
       padding: 20px;
       color: #64748b;
       font-size: 14px;
     }
-
     footer a {
       color: #0f4c81;
       font-weight: bold;
       text-decoration: none;
     }
-
     @media print {
       @page {
         size: A4 portrait;
         margin: 8mm;
       }
-
       html,
       body {
         background: white !important;
@@ -268,19 +228,16 @@
         padding: 0 !important;
         overflow: hidden !important;
       }
-
       header,
       main > .card:not(.print-area),
       footer {
         display: none !important;
       }
-
       main {
         margin: 0 !important;
         padding: 0 !important;
         max-width: 100% !important;
       }
-
       .print-area {
         display: block !important;
         box-shadow: none !important;
@@ -289,7 +246,6 @@
         border-radius: 0 !important;
         background: white !important;
       }
-
       .preview {
         border: none !important;
         width: 165mm !important;
@@ -298,34 +254,29 @@
         padding: 0 !important;
         background: white !important;
       }
-
       .logo-doc {
         display: block !important;
         width: 100% !important;
-        max-height: 55px !important;
+        height: 55px !important;
         object-fit: contain !important;
         margin-bottom: 5px !important;
       }
-
       .doc-header {
         font-size: 12px !important;
         padding-bottom: 4px !important;
         margin-bottom: 7px !important;
         border-bottom: 1.5px solid #000 !important;
       }
-
       .doc-title {
         font-size: 12px !important;
         margin: 8px 0 !important;
       }
-
       .sector-table,
       .evo-table {
         width: 100% !important;
         border-collapse: collapse !important;
         margin-bottom: 7px !important;
       }
-
       .sector-table td,
       .evo-table td,
       .evo-table th {
@@ -334,93 +285,76 @@
         line-height: 1.1 !important;
         text-align: center !important;
       }
-
       .sector-title {
         font-size: 11px !important;
         font-weight: bold !important;
         background: #eee !important;
       }
-
       .doctor {
         font-size: 9.7px !important;
         text-transform: uppercase !important;
       }
-
       .evo-table td,
       .evo-table th {
         font-size: 10px !important;
       }
-
       strong {
         font-size: 11px !important;
       }
     }
-
     @media (max-width: 700px) {
       header h1 {
         font-size: 20px;
       }
-
       .grid,
       .actions,
       .editor-setores,
       .editor-actions {
         grid-template-columns: 1fr;
       }
-
       .card {
         padding: 14px;
       }
-
       .preview {
         width: 100%;
         padding: 10px;
         font-size: 13px;
         overflow-x: auto;
       }
-
       .sector-table td,
       .evo-table td,
       .evo-table th {
         padding: 7px;
       }
-
       .doc-title {
         font-size: 14px;
       }
-
       .sector-title {
         font-size: 14px;
       }
-
       .doctor {
         font-size: 12px;
       }
     }
   </style>
 </head>
-
 <body>
   <header>
-    <img src="../logo_hrec.png"/>
     <h1>Gerador de Escala Diária - HREC</h1>
+    <p>Importe a escala semanal, edite alterações do dia e gere a escala diária</p>
   </header>
-
   <main>
     <section class="card">
       <label>1. Anexe a escala semanal dos médicos</label>
       <input type="file" id="fileInput" accept=".xlsx,.xls" />
-
       <div class="hint">
         A logo deve estar na mesma pasta deste arquivo HTML com o nome:
         <strong>logo_hrec.jpg</strong>
         <br><br>
         O sistema lê a coluna <strong>NOME COMPLETO</strong> e considera como plantão as marcações nos dias da escala.
       </div>
-
       <div id="importStatus" class="success"></div>
     </section>
-
     <section class="card">
       <div class="grid">
         <div>
@@ -429,65 +363,52 @@
             <option value="">Importe a planilha primeiro</option>
           </select>
         </div>
-
         <div>
           <label>Data da escala diária</label>
           <input type="text" id="dateText" placeholder="Ex: 10/06/2026" />
         </div>
       </div>
-
       <button onclick="generateDaily()">Gerar escala diária</button>
     </section>
-
     <section class="card">
       <label>Editar médicos por setor</label>
-
       <div class="hint">
         Edite os nomes caso a escala prevista sofra alterações. Use <strong>um médico por linha</strong>.
         Não precisa escrever <strong>DR(A)</strong>, o sistema adiciona automaticamente na prévia.
       </div>
-
       <div id="sectorEditor" class="editor-setores"></div>
-
       <div class="editor-actions">
         <button class="secondary" onclick="applySectorEdits()">Aplicar alterações</button>
         <button class="danger" onclick="restoreOriginalDay()">Restaurar escala original</button>
       </div>
     </section>
-
     <section class="card">
       <label>
         <input type="checkbox" id="autoEvolucoes" checked style="width:auto; margin-right:8px;">
         Preencher evoluções automaticamente pelo dia da semana
       </label>
-
       <label style="margin-top:14px;">Evoluções</label>
       <textarea id="evolucoes" rows="7"></textarea>
-
       <div class="hint">
         As evoluções serão preenchidas automaticamente conforme o dia da semana, mas você pode editar manualmente.
       </div>
     </section>
-
     <section class="card actions">
-      <button class="secondary" onclick="exportWord()">Exportar Word</button>
       <button onclick="printPreview()">Imprimir / PDF</button>
       <button class="image-btn" onclick="saveAsImage()">Salvar Imagem</button>
       <button class="whatsapp" onclick="copyWhatsApp()">Copiar WhatsApp</button>
+      <button class="danger" onclick="clearAll()">Limpar</button>
     </section>
-
     <section class="card print-area">
       <div id="preview" class="preview">
         <p class="empty">A prévia aparecerá aqui após importar a planilha.</p>
       </div>
     </section>
   </main>
-
   <footer>
     Copyright &copy; |
     <a href="https://github.com/wenderclaytonfilho" target="_blank">Wender Filho</a>
   </footer>
-
   <script>
     let workbookData = [];
     let dailyData = {};
@@ -495,9 +416,7 @@
     let selectedDaily = {};
     let detectedMonth = "06";
     let detectedYear = String(new Date().getFullYear());
-
     const logoDataUrl = "logo_hrec.jpg?" + Date.now();
-
     const sectorsOrder = [
       "CLÍNICOS",
       "PEDIATRIA/NEO",
@@ -508,14 +427,12 @@
       "UTI",
       "UTI PED"
     ];
-
     const skippedSectors = [
       "AMBULATORIO",
       "AMBULATÓRIO",
       "ANESTESISTA",
       "INFECTOLOGISTA"
     ];
-
     const sectorRules = [
       {
         name: "PEDIATRIA/NEO - SAZONALIDADE",
@@ -601,7 +518,6 @@
         ]
       }
     ];
-
     const evolucoesPorDia = {
       0: [
         ["CLÍNICA MÉDICA", "Messias"],
@@ -667,30 +583,23 @@
         ["AUXILIAR/CIRURGIA", "Talles"]
       ]
     };
-
     document.getElementById("fileInput").addEventListener("change", handleFile);
-
     document.getElementById("autoEvolucoes").addEventListener("change", () => {
       fillEvolucoesByDate();
       renderPreview();
     });
-
     document.getElementById("daySelect").addEventListener("change", () => {
       const day = document.getElementById("daySelect").value;
-
       if (day) {
         document.getElementById("dateText").value = `${day}/${detectedMonth}/${detectedYear}`;
       }
-
       fillEvolucoesByDate();
       generateDaily();
     });
-
     document.getElementById("dateText").addEventListener("change", () => {
       fillEvolucoesByDate();
       renderPreview();
     });
-
     function normalize(text) {
       return String(text || "")
         .normalize("NFD")
@@ -699,52 +608,39 @@
         .trim()
         .toUpperCase();
     }
-
     function normalizeLoose(text) {
       return normalize(text)
         .replace(/[^\w\s]/g, " ")
         .replace(/\s+/g, " ")
         .trim();
     }
-
     function handleFile(e) {
       const file = e.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
-
       reader.onload = function(event) {
         const data = new Uint8Array(event.target.result);
-
         const wb = XLSX.read(data, {
           type: "array",
           cellDates: true
         });
-
         const sheet = wb.Sheets[wb.SheetNames[0]];
-
         workbookData = XLSX.utils.sheet_to_json(sheet, {
           header: 1,
           defval: ""
         });
-
         extractSchedule();
       };
-
       reader.readAsArrayBuffer(file);
     }
-
     function detectSector(rowText) {
       const clean = normalizeLoose(rowText);
-
       if (!clean) return null;
-
       for (const skipped of skippedSectors) {
         if (clean.includes(normalizeLoose(skipped))) {
           return "SKIP";
         }
       }
-
       for (const rule of sectorRules) {
         for (const key of rule.keys) {
           if (clean.includes(normalizeLoose(key))) {
@@ -752,13 +648,10 @@
           }
         }
       }
-
       return null;
     }
-
     function extractMonthAndYear(rowText) {
       const text = normalize(rowText);
-
       const monthMap = {
         "JANEIRO": "01",
         "FEVEREIRO": "02",
@@ -774,31 +667,24 @@
         "NOVEMBRO": "11",
         "DEZEMBRO": "12"
       };
-
       for (const monthName in monthMap) {
         if (text.includes(monthName)) {
           detectedMonth = monthMap[monthName];
           break;
         }
       }
-
       detectedYear = String(new Date().getFullYear());
     }
-
     function extractSchedule() {
       dailyData = {};
-
       let currentSector = "";
       let nameColumn = -1;
       let dayColumns = [];
-
       for (let r = 0; r < workbookData.length; r++) {
         const row = workbookData[r];
         const rowText = row.map(cell => String(cell || "")).join(" ");
         const rowClean = normalizeLoose(rowText);
-
         extractMonthAndYear(rowText);
-
         if (
           rowClean.includes("JUSTIFICATIVA DE ALTERACOES") ||
           rowClean.includes("ESCALA DE SERVICO PREVISTA")
@@ -808,39 +694,30 @@
           dayColumns = [];
           continue;
         }
-
         const sectorFound = detectSector(rowText);
-
         if (sectorFound === "SKIP") {
           currentSector = "";
           nameColumn = -1;
           dayColumns = [];
           continue;
         }
-
         if (sectorFound && dayColumns.length === 0) {
           currentSector = sectorFound;
           nameColumn = -1;
           continue;
         }
-
         for (let c = 0; c < row.length; c++) {
           if (normalize(row[c]) === "NOME COMPLETO") {
             nameColumn = c;
           }
         }
-
         const possibleDays = [];
-
         row.forEach((cell, c) => {
           let value = cell;
-
           if (value instanceof Date) {
             value = value.getDate();
           }
-
           value = String(value).trim();
-
           if (/^(0?[1-9]|[12][0-9]|3[01])$/.test(value)) {
             possibleDays.push({
               day: value.padStart(2, "0"),
@@ -848,59 +725,43 @@
             });
           }
         });
-
         if (possibleDays.length >= 3) {
           dayColumns = possibleDays;
           continue;
         }
-
         if (!currentSector || nameColumn === -1 || !dayColumns.length) continue;
-
         let name = String(row[nameColumn] || "").trim();
-
         if (!isValidDoctorName(name)) {
           name = findDoctorNameFallback(row);
         }
-
         if (!isValidDoctorName(name)) continue;
-
         for (const item of dayColumns) {
           const mark = String(row[item.col] || "").trim();
-
           if (isDuty(mark)) {
             if (!dailyData[item.day]) dailyData[item.day] = {};
             if (!dailyData[item.day][currentSector]) dailyData[item.day][currentSector] = [];
-
             const fullName = formatFullName(name);
-
             if (!dailyData[item.day][currentSector].includes(fullName)) {
               dailyData[item.day][currentSector].push(fullName);
             }
           }
         }
       }
-
       originalDailyData = JSON.parse(JSON.stringify(dailyData));
-
       fillDaySelect();
       showImportStatus();
     }
-
     function findDoctorNameFallback(row) {
       for (let i = 0; i < row.length; i++) {
         const value = String(row[i] || "").trim();
-
         if (isValidDoctorName(value)) {
           return value;
         }
       }
-
       return "";
     }
-
     function isValidDoctorName(name) {
       const text = normalize(name);
-
       if (!text) return false;
       if (text === "NOME COMPLETO") return false;
       if (text.includes("ENTRADA")) return false;
@@ -921,15 +782,11 @@
       if (/^\d+$/.test(text)) return false;
       if (/^CRM/.test(text)) return false;
       if (/^\d{1,2}:\d{2}/.test(text)) return false;
-
       return /[A-ZÁ-Ú]/i.test(name);
     }
-
     function isDuty(mark) {
       const clean = normalize(mark);
-
       if (!clean) return false;
-
       const ignored = [
         "ENTRADA",
         "SAIDA",
@@ -946,131 +803,95 @@
         "X",
         "0"
       ];
-
       if (ignored.includes(clean)) return false;
-
       return true;
     }
-
     function formatFullName(name) {
       return String(name)
         .replace(/\s+/g, " ")
         .trim()
         .toUpperCase();
     }
-
     function fillDaySelect() {
       const select = document.getElementById("daySelect");
       select.innerHTML = "";
-
       const days = Object.keys(dailyData).sort((a, b) => Number(a) - Number(b));
-
       if (!days.length) {
         select.innerHTML = `<option value="">Nenhum dia encontrado</option>`;
         document.getElementById("preview").innerHTML = `<p class="empty">Nenhum plantão foi encontrado na planilha.</p>`;
         document.getElementById("sectorEditor").innerHTML = "";
         return;
       }
-
       days.forEach(day => {
         const option = document.createElement("option");
         option.value = day;
         option.textContent = `Dia ${day}`;
         select.appendChild(option);
       });
-
       const firstDay = days[0];
       document.getElementById("dateText").value = `${firstDay}/${detectedMonth}/${detectedYear}`;
-
       fillEvolucoesByDate();
       generateDaily();
     }
-
     function showImportStatus() {
       const status = document.getElementById("importStatus");
       const days = Object.keys(dailyData).length;
-
       status.style.display = "block";
       status.innerHTML = `Planilha importada com sucesso. Foram encontrados plantões em <strong>${days}</strong> dia(s).`;
     }
-
     function fillEvolucoesByDate() {
       const auto = document.getElementById("autoEvolucoes").checked;
       if (!auto) return;
-
       const dateText = document.getElementById("dateText").value;
       const date = parseDateBR(dateText);
-
       if (!date) return;
-
       const day = date.getDay();
       const rows = evolucoesPorDia[day] || [];
-
       document.getElementById("evolucoes").value = rows
         .map(item => `${item[0]} | ${item[1]}`)
         .join("\n");
     }
-
     function parseDateBR(dateText) {
       const parts = String(dateText || "").split("/");
-
       if (parts.length !== 3) return null;
-
       const d = Number(parts[0]);
       const m = Number(parts[1]) - 1;
       let y = Number(parts[2]);
-
       if (y < 100) y += 2000;
-
       const date = new Date(y, m, d);
-
       if (isNaN(date.getTime())) return null;
-
       return date;
     }
-
     function generateDaily() {
       const day = document.getElementById("daySelect").value;
-
       if (!day || !dailyData[day]) {
         alert("Selecione um dia válido.");
         return;
       }
-
       selectedDaily = dailyData[day];
-
       fillSectorEditor();
       renderPreview();
     }
-
     function sectorId(sector) {
       return "sector_" + normalize(sector)
         .replace(/[^A-Z0-9]/g, "_")
         .replace(/_+/g, "_");
     }
-
     function fillSectorEditor() {
       const editor = document.getElementById("sectorEditor");
-
       if (!editor) return;
-
       editor.innerHTML = "";
-
       sectorsOrder.forEach(sector => {
         const doctors = selectedDaily[sector] || [];
-
         const div = document.createElement("div");
         div.className = "editor-setor";
-
         div.innerHTML = `
           <label>${sector}</label>
           <textarea id="${sectorId(sector)}" placeholder="Um médico por linha">${doctors.join("\n")}</textarea>
         `;
-
         editor.appendChild(div);
       });
     }
-
     function cleanDoctorNameForEditor(name) {
       return String(name || "")
         .replace(/DR\(A\)\.?/gi, "")
@@ -1080,7 +901,6 @@
         .trim()
         .toUpperCase();
     }
-
     function getDoctorsFromTextarea(value) {
       return String(value || "")
         .split("\n")
@@ -1088,53 +908,37 @@
         .filter(Boolean)
         .filter((name, index, array) => array.indexOf(name) === index);
     }
-
     function applySectorEdits() {
       const day = document.getElementById("daySelect").value;
-
       if (!day || !dailyData[day]) {
         alert("Selecione um dia válido.");
         return;
       }
-
       const updatedDay = {};
-
       sectorsOrder.forEach(sector => {
         const textarea = document.getElementById(sectorId(sector));
-
         if (!textarea) return;
-
         updatedDay[sector] = getDoctorsFromTextarea(textarea.value);
       });
-
       dailyData[day] = updatedDay;
       selectedDaily = dailyData[day];
-
       renderPreview();
-
       alert("Alterações aplicadas na escala diária!");
     }
-
     function restoreOriginalDay() {
       const day = document.getElementById("daySelect").value;
-
       if (!day || !originalDailyData[day]) {
         alert("Não há escala original para restaurar.");
         return;
       }
-
       dailyData[day] = JSON.parse(JSON.stringify(originalDailyData[day]));
       selectedDaily = dailyData[day];
-
       fillSectorEditor();
       renderPreview();
-
       alert("Escala original restaurada!");
     }
-
     function getEvolucoes() {
       const text = document.getElementById("evolucoes").value;
-
       return text
         .split("\n")
         .map(line => line.trim())
@@ -1144,29 +948,21 @@
           return { setor, medico };
         });
     }
-
     function renderPreview() {
       const date = document.getElementById("dateText").value || "";
-
       let html = `
         <img class="logo-doc" src="${logoDataUrl}" alt="Logo HREC" onerror="this.style.display='none'">
-
         <div class="doc-header">
           HREC – AFOGADOS DA INGAZEIRA
         </div>
-
         <div class="doc-title">
           MÉDICOS DE PLANTÃO HOJE DATA ${date}
         </div>
-
         <table class="sector-table">
       `;
-
       sectorsOrder.forEach(sector => {
         const doctors = selectedDaily[sector] || [];
-
         html += `<tr><td class="sector-title">${sector}</td></tr>`;
-
         if (doctors.length) {
           doctors.forEach(doc => {
             html += `<tr><td class="doctor">DR(A). ${doc}</td></tr>`;
@@ -1175,9 +971,7 @@
           html += `<tr><td class="empty">Sem médico encontrado</td></tr>`;
         }
       });
-
       html += `</table>`;
-
       html += `
         <strong>EVOLUÇÕES</strong>
         <table class="evo-table">
@@ -1186,7 +980,6 @@
             <th>MÉDICO</th>
           </tr>
       `;
-
       getEvolucoes().forEach(e => {
         html += `
           <tr>
@@ -1195,68 +988,85 @@
           </tr>
         `;
       });
-
       html += `</table>`;
-
       document.getElementById("preview").innerHTML = html;
     }
-
     function printPreview() {
       window.print();
     }
-
     async function saveAsImage() {
       const preview = document.getElementById("preview");
-
       if (!preview || !preview.innerText.trim()) {
         alert("Gere uma escala antes de salvar como imagem.");
         return;
       }
-
-      const oldWidth = preview.style.width;
-      const oldMaxWidth = preview.style.maxWidth;
-      const oldBorder = preview.style.border;
-      const oldPadding = preview.style.padding;
-
-      preview.style.width = "165mm";
-      preview.style.maxWidth = "165mm";
-      preview.style.border = "1px solid #111827";
-      preview.style.padding = "16px";
-
+      const date = document.getElementById("dateText").value || "escala";
+      const clone = preview.cloneNode(true);
+      clone.id = "preview-capture";
+      clone.style.width = "155mm";
+      clone.style.maxWidth = "155mm";
+      clone.style.minHeight = "auto";
+      clone.style.height = "auto";
+      clone.style.padding = "16px";
+      clone.style.margin = "0";
+      clone.style.background = "#ffffff";
+      clone.style.border = "1px solid #111827";
+      clone.style.overflow = "visible";
+      clone.style.position = "absolute";
+      clone.style.left = "-9999px";
+      clone.style.top = "0";
+      clone.style.transform = "none";
+      const captureArea = document.createElement("div");
+      captureArea.style.position = "absolute";
+      captureArea.style.left = "-9999px";
+      captureArea.style.top = "0";
+      captureArea.style.background = "#ffffff";
+      captureArea.style.padding = "0";
+      captureArea.style.margin = "0";
+      captureArea.style.width = "155mm";
+      captureArea.style.overflow = "visible";
+      captureArea.appendChild(clone);
+      document.body.appendChild(captureArea);
+      const images = clone.querySelectorAll("img");
+      await Promise.all(
+        Array.from(images).map(img => {
+          return new Promise(resolve => {
+            if (img.complete) {
+              resolve();
+            } else {
+              img.onload = resolve;
+              img.onerror = resolve;
+            }
+          });
+        })
+      );
       try {
-        const canvas = await html2canvas(preview, {
+        const canvas = await html2canvas(clone, {
           scale: 3,
           backgroundColor: "#ffffff",
           useCORS: false,
-          allowTaint: true
+          allowTaint: true,
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: clone.scrollWidth,
+          windowHeight: clone.scrollHeight
         });
-
-        const date = document.getElementById("dateText").value || "escala";
         const link = document.createElement("a");
-
         link.download = `Escala_Diaria_${date.replaceAll("/", "-")}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
       } catch (error) {
-        alert("Não foi possível salvar a imagem. Confirme se a logo está com o nome logo_hrec.jpg e na mesma pasta.");
         console.error(error);
+        alert("Não foi possível salvar a imagem. Confira se a logo está como logo_hrec.jpg na mesma pasta do HTML.");
       }
-
-      preview.style.width = oldWidth;
-      preview.style.maxWidth = oldMaxWidth;
-      preview.style.border = oldBorder;
-      preview.style.padding = oldPadding;
+      document.body.removeChild(captureArea);
     }
-
     function copyWhatsApp() {
       const date = document.getElementById("dateText").value || "";
       let text = `*MÉDICOS DE PLANTÃO - ${date}*\n\n`;
-
       sectorsOrder.forEach(sector => {
         const doctors = selectedDaily[sector] || [];
-
         text += `*${sector}*\n`;
-
         if (doctors.length) {
           doctors.forEach(doc => {
             text += `- DR(A). ${doc}\n`;
@@ -1264,23 +1074,18 @@
         } else {
           text += `- Sem médico encontrado\n`;
         }
-
         text += "\n";
       });
-
       text += `*EVOLUÇÕES*\n`;
-
       getEvolucoes().forEach(e => {
         text += `- ${e.setor}: ${e.medico}\n`;
       });
-
       navigator.clipboard.writeText(text).then(() => {
         alert("Texto copiado para WhatsApp!");
       });
     }
-
-    async function exportWord() {
-      alert("Para manter a logo e o layout certinho, use Imprimir/PDF ou Salvar Imagem.");
+    function clearAll() {
+      location.reload();
     }
   </script>
 </body>

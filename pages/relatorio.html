@@ -71,6 +71,10 @@
       font-size: 15px;
     }
 
+    textarea {
+      resize: vertical;
+    }
+
     button {
       border: none;
       background: #0f4c81;
@@ -78,6 +82,12 @@
       font-weight: bold;
       cursor: pointer;
       margin-top: 10px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      filter: brightness(0.95);
+      transform: translateY(-1px);
     }
 
     button.secondary {
@@ -91,6 +101,10 @@
 
     button.image-btn {
       background: #6d28d9;
+    }
+
+    button.danger {
+      background: #dc2626;
     }
 
     .grid {
@@ -123,6 +137,39 @@
       font-size: 14px;
       margin-top: 10px;
       display: none;
+    }
+
+    .editor-setores {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .editor-setor {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .editor-setor label {
+      color: #0f4c81;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .editor-setor textarea {
+      min-height: 100px;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .editor-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
     }
 
     .preview {
@@ -310,7 +357,9 @@
       }
 
       .grid,
-      .actions {
+      .actions,
+      .editor-setores,
+      .editor-actions {
         grid-template-columns: 1fr;
       }
 
@@ -349,7 +398,7 @@
 <body>
   <header>
     <h1>Gerador de Escala Diária - HREC</h1>
-    <p>Importe a escala semanal e gere automaticamente a escala diária</p>
+    <p>Importe a escala semanal, edite alterações do dia e gere a escala diária</p>
   </header>
 
   <main>
@@ -383,6 +432,22 @@
       </div>
 
       <button onclick="generateDaily()">Gerar escala diária</button>
+    </section>
+
+    <section class="card">
+      <label>Editar médicos por setor</label>
+
+      <div class="hint">
+        Edite os nomes caso a escala prevista sofra alterações. Use <strong>um médico por linha</strong>.
+        Não precisa escrever <strong>DR(A)</strong>, o sistema adiciona automaticamente na prévia.
+      </div>
+
+      <div id="sectorEditor" class="editor-setores"></div>
+
+      <div class="editor-actions">
+        <button class="secondary" onclick="applySectorEdits()">Aplicar alterações</button>
+        <button class="danger" onclick="restoreOriginalDay()">Restaurar escala original</button>
+      </div>
     </section>
 
     <section class="card">
@@ -421,6 +486,7 @@
   <script>
     let workbookData = [];
     let dailyData = {};
+    let originalDailyData = {};
     let selectedDaily = {};
     let detectedMonth = "06";
     let detectedYear = String(new Date().getFullYear());
@@ -600,6 +666,22 @@
     document.getElementById("fileInput").addEventListener("change", handleFile);
 
     document.getElementById("autoEvolucoes").addEventListener("change", () => {
+      fillEvolucoesByDate();
+      renderPreview();
+    });
+
+    document.getElementById("daySelect").addEventListener("change", () => {
+      const day = document.getElementById("daySelect").value;
+
+      if (day) {
+        document.getElementById("dateText").value = `${day}/${detectedMonth}/${detectedYear}`;
+      }
+
+      fillEvolucoesByDate();
+      generateDaily();
+    });
+
+    document.getElementById("dateText").addEventListener("change", () => {
       fillEvolucoesByDate();
       renderPreview();
     });
@@ -793,6 +875,8 @@
         }
       }
 
+      originalDailyData = JSON.parse(JSON.stringify(dailyData));
+
       fillDaySelect();
       showImportStatus();
     }
@@ -879,6 +963,7 @@
       if (!days.length) {
         select.innerHTML = `<option value="">Nenhum dia encontrado</option>`;
         document.getElementById("preview").innerHTML = `<p class="empty">Nenhum plantão foi encontrado na planilha.</p>`;
+        document.getElementById("sectorEditor").innerHTML = "";
         return;
       }
 
@@ -903,22 +988,6 @@
       status.style.display = "block";
       status.innerHTML = `Planilha importada com sucesso. Foram encontrados plantões em <strong>${days}</strong> dia(s).`;
     }
-
-    document.getElementById("daySelect").addEventListener("change", () => {
-      const day = document.getElementById("daySelect").value;
-
-      if (day) {
-        document.getElementById("dateText").value = `${day}/${detectedMonth}/${detectedYear}`;
-      }
-
-      fillEvolucoesByDate();
-      generateDaily();
-    });
-
-    document.getElementById("dateText").addEventListener("change", () => {
-      fillEvolucoesByDate();
-      renderPreview();
-    });
 
     function fillEvolucoesByDate() {
       const auto = document.getElementById("autoEvolucoes").checked;
@@ -964,7 +1033,98 @@
       }
 
       selectedDaily = dailyData[day];
+
+      fillSectorEditor();
       renderPreview();
+    }
+
+    function sectorId(sector) {
+      return "sector_" + normalize(sector)
+        .replace(/[^A-Z0-9]/g, "_")
+        .replace(/_+/g, "_");
+    }
+
+    function fillSectorEditor() {
+      const editor = document.getElementById("sectorEditor");
+
+      if (!editor) return;
+
+      editor.innerHTML = "";
+
+      sectorsOrder.forEach(sector => {
+        const doctors = selectedDaily[sector] || [];
+
+        const div = document.createElement("div");
+        div.className = "editor-setor";
+
+        div.innerHTML = `
+          <label>${sector}</label>
+          <textarea id="${sectorId(sector)}" placeholder="Um médico por linha">${doctors.join("\n")}</textarea>
+        `;
+
+        editor.appendChild(div);
+      });
+    }
+
+    function cleanDoctorNameForEditor(name) {
+      return String(name || "")
+        .replace(/DR\(A\)\.?/gi, "")
+        .replace(/DR\./gi, "")
+        .replace(/DRA\./gi, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toUpperCase();
+    }
+
+    function getDoctorsFromTextarea(value) {
+      return String(value || "")
+        .split("\n")
+        .map(cleanDoctorNameForEditor)
+        .filter(Boolean)
+        .filter((name, index, array) => array.indexOf(name) === index);
+    }
+
+    function applySectorEdits() {
+      const day = document.getElementById("daySelect").value;
+
+      if (!day || !dailyData[day]) {
+        alert("Selecione um dia válido.");
+        return;
+      }
+
+      const updatedDay = {};
+
+      sectorsOrder.forEach(sector => {
+        const textarea = document.getElementById(sectorId(sector));
+
+        if (!textarea) return;
+
+        updatedDay[sector] = getDoctorsFromTextarea(textarea.value);
+      });
+
+      dailyData[day] = updatedDay;
+      selectedDaily = dailyData[day];
+
+      renderPreview();
+
+      alert("Alterações aplicadas na escala diária!");
+    }
+
+    function restoreOriginalDay() {
+      const day = document.getElementById("daySelect").value;
+
+      if (!day || !originalDailyData[day]) {
+        alert("Não há escala original para restaurar.");
+        return;
+      }
+
+      dailyData[day] = JSON.parse(JSON.stringify(originalDailyData[day]));
+      selectedDaily = dailyData[day];
+
+      fillSectorEditor();
+      renderPreview();
+
+      alert("Escala original restaurada!");
     }
 
     function getEvolucoes() {

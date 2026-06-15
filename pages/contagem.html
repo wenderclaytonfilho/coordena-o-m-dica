@@ -806,14 +806,40 @@
           return linha;
         });
     }
+    function criarTodasEvolucoesOrdenadas(evolucoesValidas) {
+      return [...evolucoesValidas]
+        .sort((a, b) => {
+          if (a.DATA_CHAVE !== b.DATA_CHAVE) {
+            return a.DATA_CHAVE.localeCompare(b.DATA_CHAVE);
+          }
 
+          const dataA = formatarDataExcel(a.DT_EVOL);
+          const dataB = formatarDataExcel(b.DT_EVOL);
+
+          return (dataA || 0) - (dataB || 0);
+        })
+        .map(item => ({
+          DATA: item.DATA_DIA,
+          REG: item.REG,
+          PACIENTE: item.NOME,
+          "DATA DE NASCIMENTO": item.DT_NASC,
+          "DATA/HORA EVOLUÇÃO": item.DT_EVOL,
+          SEXO: item.SEXO,
+          CNS: item.CNS,
+          MÉDICO: item.MEDICO,
+          "MÉDICO / GRUPO": item.MEDICO_AGRUPADO,
+          CLÍNICA: item.STR_NOME
+        }));
+    }
     function gerarWorkbook(dados) {
       const novoWorkbook = XLSX.utils.book_new();
+
+      const todasEvolucoes = criarTodasEvolucoesOrdenadas(dados.evolucoesValidas);
 
       adicionarAba(novoWorkbook, dados.resumoGeral, "Resumo Geral");
       adicionarAba(novoWorkbook, dados.resumoPorDia, "Resumo por Dia");
       adicionarAba(novoWorkbook, dados.resumoDetalhado, "Dia Clinica Detalhado");
-
+      adicionarAba(novoWorkbook, todasEvolucoes, "Todas Evoluções");
       Object.keys(dados.grupos)
         .sort()
         .forEach(medico => {

@@ -8,6 +8,10 @@
   <title>Extrator de Evoluções Médicas</title>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
   <style>
     * {
@@ -255,6 +259,15 @@
         font-size: 15px;
       }
     }
+
+    .action-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-top:16px; }
+    .action-grid button { margin-top:0; }
+    .secondary { background:#475569; }
+    .secondary:hover { background:#334155; }
+    .pdf-settings { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-top:14px; }
+    .pdf-settings label { margin:0; font-size:13px; }
+    .pdf-settings input, .pdf-settings select { width:100%; margin-top:7px; padding:10px; border:1px solid #cbd5e1; border-radius:10px; background:#fff; }
+    progress { width:100%; height:12px; margin-top:14px; }
   </style>
 </head>
 
@@ -278,6 +291,24 @@
       <button id="processar" disabled>Processar e gerar planilha</button>
 
       <div id="status" class="status"></div>
+    </section>
+
+    <section class="card">
+      <h3 class="section-title">Saídas do processamento</h3>
+      <p style="color:#64748b;line-height:1.5">Depois de processar, baixe o Excel consolidado ou gere automaticamente um PDF para cada aba.</p>
+      <div class="pdf-settings">
+        <label>Margens (mm)<input id="pdfMargem" type="number" min="2" max="30" value="8"></label>
+        <label>Fonte base<input id="pdfFonte" type="number" min="4" max="12" step="0.5" value="8"></label>
+        <label>Cabeçalho<select id="pdfTitulo"><option value="sheet">Nome da aba</option><option value="file_sheet">Arquivo + aba</option><option value="none">Sem cabeçalho</option></select></label>
+        <label>Prefixo<input id="pdfPrefixo" type="text" placeholder="Opcional"></label>
+      </div>
+      <div class="action-grid">
+        <button id="baixarExcel" class="secondary" disabled>Baixar Excel processado</button>
+        <button id="gerarZip" disabled>Baixar ZIP com PDFs</button>
+        <button id="gerarPasta" disabled>Salvar PDFs em uma pasta</button>
+      </div>
+      <progress id="pdfProgresso" max="100" value="0" hidden></progress>
+      <div id="pdfStatus" class="status"></div>
     </section>
 
     <section class="card">
@@ -378,6 +409,14 @@
     const tabelaResumo = document.getElementById("tabelaResumo");
 
     let arquivoSelecionado = null;
+    let workbookGerado = null;
+    let nomeWorkbookGerado = "Evolucoes_Processadas.xlsx";
+
+    const btnBaixarExcel = document.getElementById("baixarExcel");
+    const btnGerarZip = document.getElementById("gerarZip");
+    const btnGerarPasta = document.getElementById("gerarPasta");
+    const pdfStatus = document.getElementById("pdfStatus");
+    const pdfProgresso = document.getElementById("pdfProgresso");
 
     const CLINICAS = [
       "ALOJAMENTO CONJUNTO",
@@ -871,7 +910,13 @@
         ? `Evolucoes_${periodo}.xlsx`
         : "Evolucoes_Processadas.xlsx";
 
-      XLSX.writeFile(novoWorkbook, nomeArquivo);
+      workbookGerado = novoWorkbook;
+      nomeWorkbookGerado = nomeArquivo;
+      btnBaixarExcel.disabled = false;
+      btnGerarZip.disabled = false;
+      btnGerarPasta.disabled = false;
+      mostrarPdfStatus("Processamento concluído. Escolha uma das saídas acima.", "ok");
+      return novoWorkbook;
     }
 
     function adicionarAba(workbook, dados, nome) {
@@ -937,6 +982,128 @@
 
       preview.style.display = "block";
     }
+
+
+    function mostrarPdfStatus(mensagem, tipo = "ok") {
+      pdfStatus.textContent = mensagem;
+      pdfStatus.className = "status " + tipo;
+    }
+
+    function nomeArquivoSeguro(nome) {
+      return String(nome || "arquivo")
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[\\/:*?"<>|]/g, "-")
+        .replace(/\s+/g, " ").trim().slice(0, 120) || "arquivo";
+    }
+
+    function obterOpcoesPdf() {
+      return {
+        margem: Number(document.getElementById("pdfMargem").value) || 8,
+        fonte: Number(document.getElementById("pdfFonte").value) || 8,
+        titulo: document.getElementById("pdfTitulo").value,
+        prefixo: document.getElementById("pdfPrefixo").value.trim()
+      };
+    }
+
+    function linhasDaAba(aba) {
+      const linhas = XLSX.utils.sheet_to_json(aba, { header: 1, raw: false, defval: "", blankrows: false, dateNF: "dd/mm/yyyy" });
+      let ultimaColuna = 0;
+      linhas.forEach(l => l.forEach((v, i) => { if (String(v || "").trim()) ultimaColuna = Math.max(ultimaColuna, i + 1); }));
+      return linhas.map(l => l.slice(0, ultimaColuna).map(v => String(v ?? ""))).filter(l => l.some(v => v.trim()));
+    }
+
+    function criarPdfDaAba(nomeAba, aba) {
+      const { jsPDF } = window.jspdf;
+      const op = obterOpcoesPdf();
+      const linhas = linhasDaAba(aba);
+      const dados = linhas.length ? linhas : [["Planilha sem dados"]];
+      const colunas = Math.max(1, ...dados.map(l => l.length));
+      const normalizadas = dados.map(l => [...l, ...Array(Math.max(0, colunas - l.length)).fill("")]);
+      const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
+      const largura = doc.internal.pageSize.getWidth();
+      const altura = doc.internal.pageSize.getHeight();
+      const util = largura - op.margem * 2;
+      let fonte = op.fonte;
+      const larguraCol = util / colunas;
+      if (larguraCol < 5.5) fonte = Math.min(fonte, 4.8);
+      else if (larguraCol < 7) fonte = Math.min(fonte, 5.2);
+      else if (larguraCol < 9) fonte = Math.min(fonte, 5.8);
+      else if (larguraCol < 12) fonte = Math.min(fonte, 6.5);
+
+      let titulo = "";
+      if (op.titulo === "sheet") titulo = nomeAba;
+      if (op.titulo === "file_sheet") titulo = `${nomeWorkbookGerado.replace(/\.xlsx$/i, "")} - ${nomeAba}`;
+      const inicioY = titulo ? op.margem + 9 : op.margem;
+      if (titulo) {
+        doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(25);
+        doc.text(titulo.slice(0, 115), op.margem, op.margem + 1);
+      }
+      const estilosColuna = {};
+      for (let i = 0; i < colunas; i++) estilosColuna[i] = { cellWidth: util / colunas };
+      doc.autoTable({
+        body: normalizadas,
+        startY: inicioY,
+        margin: { top: inicioY, right: op.margem, bottom: op.margem, left: op.margem },
+        theme: "grid", tableWidth: util, columnStyles: estilosColuna, showHead: "never",
+        styles: { font: "helvetica", fontSize: fonte, cellPadding: 0.8, lineWidth: 0.1, overflow: "linebreak", valign: "middle", textColor: 20, minCellHeight: 3.6 },
+        didParseCell(data) { if (data.row.index === 0) { data.cell.styles.fontStyle = "bold"; data.cell.styles.fillColor = [235,240,245]; } }
+      });
+      const paginas = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= paginas; i++) { doc.setPage(i); doc.setFontSize(8); doc.setTextColor(80); doc.text(`Página ${i} de ${paginas}`, largura - op.margem, altura - 4, { align: "right" }); }
+      return doc.output("blob");
+    }
+
+    function nomePdf(nomeAba) {
+      const op = obterOpcoesPdf();
+      const prefixo = op.prefixo ? nomeArquivoSeguro(op.prefixo) + " - " : "";
+      return prefixo + nomeArquivoSeguro(nomeAba) + ".pdf";
+    }
+
+    async function gerarPdfs(callback) {
+      if (!workbookGerado) return;
+      const nomes = workbookGerado.SheetNames;
+      pdfProgresso.hidden = false; pdfProgresso.value = 0;
+      for (let i = 0; i < nomes.length; i++) {
+        const nome = nomes[i];
+        mostrarPdfStatus(`Gerando PDFs... ${i + 1}/${nomes.length}`, "ok");
+        await callback(nomePdf(nome), criarPdfDaAba(nome, workbookGerado.Sheets[nome]));
+        pdfProgresso.value = Math.round(((i + 1) / nomes.length) * 100);
+        await new Promise(r => setTimeout(r, 25));
+      }
+      mostrarPdfStatus(`Finalizado! ${nomes.length} PDFs gerados.`, "ok");
+    }
+
+    btnBaixarExcel.addEventListener("click", () => {
+      if (workbookGerado) XLSX.writeFile(workbookGerado, nomeWorkbookGerado);
+    });
+
+    btnGerarZip.addEventListener("click", async () => {
+      try {
+        btnGerarZip.disabled = btnGerarPasta.disabled = true;
+        const zip = new JSZip();
+        await gerarPdfs(async (nome, blob) => zip.file(nome, blob));
+        mostrarPdfStatus("Compactando PDFs...", "ok");
+        const arquivo = await zip.generateAsync({ type: "blob" });
+        saveAs(arquivo, nomeWorkbookGerado.replace(/\.xlsx$/i, "") + " - PDFs.zip");
+        mostrarPdfStatus("ZIP baixado com sucesso!", "ok");
+      } catch (erro) { console.error(erro); mostrarPdfStatus("Erro ao gerar ZIP: " + (erro.message || erro), "erro"); }
+      finally { btnGerarZip.disabled = btnGerarPasta.disabled = false; }
+    });
+
+    btnGerarPasta.addEventListener("click", async () => {
+      if (!window.showDirectoryPicker) { mostrarPdfStatus('O navegador não permite escolher pasta. Use "Baixar ZIP com PDFs".', "erro"); return; }
+      try {
+        btnGerarZip.disabled = btnGerarPasta.disabled = true;
+        const pasta = await window.showDirectoryPicker({ mode: "readwrite" });
+        await gerarPdfs(async (nome, blob) => {
+          const arquivo = await pasta.getFileHandle(nome, { create: true });
+          const gravador = await arquivo.createWritable(); await gravador.write(blob); await gravador.close();
+        });
+      } catch (erro) {
+        mostrarPdfStatus(erro.name === "AbortError" ? "Operação cancelada." : "Erro: " + (erro.message || erro), erro.name === "AbortError" ? "ok" : "erro");
+      } finally { btnGerarZip.disabled = btnGerarPasta.disabled = false; }
+    });
+
   </script>
 </body>
 

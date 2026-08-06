@@ -457,15 +457,20 @@
     }
 
     function obterMedicoAgrupado(nomeMedico) {
-      const medico = normalizarTexto(nomeMedico);
+    const medico = normalizarTexto(nomeMedico);
 
-      const ehMendes = NOMES_MENDES.some(nome => medico.includes(normalizarTexto(nome)));
+    const palavras = medico.split(/\s+/);
 
-      if (ehMendes) {
+    const ehMendes =
+        palavras.includes("MESSIAS") ||
+        palavras.includes("ANDRE") ||
+        palavras.includes("BARBARA");
+
+    if (ehMendes) {
         return "MENDES SERVIÇOS MÉDICOS";
-      }
+    }
 
-      return String(nomeMedico || "SEM MÉDICO").trim().toUpperCase();
+    return String(nomeMedico || "SEM MÉDICO").trim().toUpperCase();
     }
 
     function formatarDataExcel(valor) {

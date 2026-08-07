@@ -78,7 +78,7 @@
             const doctors = {};
             const anesthetists = {};
 
-            const headers = sheetData[0];
+            const headers = sheetData[4];
 
             const doctor1Index = headers.indexOf("CIRURGIÃO 1");
             const doctor2Index = headers.indexOf("CIRURGIÃO 2");
@@ -96,7 +96,7 @@
                 return { doctors: {}, anesthetists: {} };
             }
 
-            for (let i = 1; i < sheetData.length; i++) {
+            for (let i = 5; i < sheetData.length; i++) {
                 const row = sheetData[i];
 
                 const doctor1 = row[doctor1Index];

@@ -335,7 +335,7 @@
 
         <div class="info-box">
           <strong id="totalMedicos">0</strong>
-          <span>Médicos / grupos</span>
+          <span>Médicos</span>
         </div>
       </div>
     </section>
@@ -370,7 +370,7 @@
         <thead>
           <tr>
             <th>Data</th>
-            <th>Médico / Grupo</th>
+            <th>Médico</th>
             <th class="text-right">Alojamento Conjunto</th>
             <th class="text-right">Clínica Cirúrgica</th>
             <th class="text-right">Clínica Materno</th>
@@ -424,14 +424,6 @@
       "CLÍNICA MATERNO",
       "CLÍNICA MÉDICA",
       "CLÍNICA PEDIÁTRICA"
-    ];
-
-    const NOMES_MENDES = [
-      "MESSIAS",
-      "ANDRE",
-      "ANDRÉ",
-      "BARBARA",
-      "BÁRBARA"
     ];
 
     const ESTATUTARIOS_IGNORADOS = [
@@ -496,20 +488,9 @@
     }
 
     function obterMedicoAgrupado(nomeMedico) {
-    const medico = normalizarTexto(nomeMedico);
-
-    const palavras = medico.split(/\s+/);
-
-    const ehMendes =
-        palavras.includes("MESSIAS") ||
-        palavras.includes("ANDRE") ||
-        palavras.includes("BARBARA");
-
-    if (ehMendes) {
-        return "MENDES SERVIÇOS MÉDICOS";
-    }
-
-    return String(nomeMedico || "SEM MÉDICO").trim().toUpperCase();
+      // Não há mais agrupamento dos médicos da Mendes.
+      // Cada médico terá sua própria aba/planilha.
+      return String(nomeMedico || "SEM MÉDICO").trim().toUpperCase();
     }
 
     function formatarDataExcel(valor) {

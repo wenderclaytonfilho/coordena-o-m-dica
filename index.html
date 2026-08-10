@@ -2,79 +2,1041 @@
 <html lang="pt-br">
 
 <head>
-	<meta charset="utf-8">
+	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 	<title>Coordenação Médica - HREC</title>
+
 	<link rel="shortcut icon" href="icone.ico" type="image/x-icon">
-	<link rel="stylesheet" href="style.css">
-	<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap" rel="stylesheet">
+
+	<link
+		href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;600;700&display=swap"
+		rel="stylesheet"
+	>
+
+	<style>
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Karla', sans-serif;
+			background: #f4f7f9;
+			color: #24323d;
+			min-height: 100vh;
+		}
+
+		/* =========================
+		   LOGIN
+		========================= */
+
+		#login-page {
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 25px;
+			background:
+				linear-gradient(
+					135deg,
+					#e9f5f4,
+					#f7fafb
+				);
+		}
+
+		.login-card {
+			width: 100%;
+			max-width: 420px;
+			background: white;
+			border-radius: 18px;
+			padding: 38px;
+			box-shadow: 0 12px 35px rgba(0,0,0,.10);
+		}
+
+		.login-logo {
+			text-align: center;
+			margin-bottom: 28px;
+		}
+
+		.login-logo img {
+			max-width: 120px;
+			margin-bottom: 15px;
+		}
+
+		.login-logo h1 {
+			font-size: 25px;
+			color: #205f59;
+		}
+
+		.login-logo p {
+			font-size: 14px;
+			color: #7b8a91;
+			margin-top: 6px;
+		}
+
+		.form-group {
+			margin-bottom: 18px;
+		}
+
+		.form-group label {
+			display: block;
+			font-size: 14px;
+			font-weight: 700;
+			margin-bottom: 7px;
+			color: #40525d;
+		}
+
+		.form-group input {
+			width: 100%;
+			padding: 13px 14px;
+			border: 1px solid #d7e0e4;
+			border-radius: 9px;
+			outline: none;
+			font-family: inherit;
+			font-size: 15px;
+			transition: .2s;
+		}
+
+		.form-group input:focus {
+			border-color: #398e86;
+			box-shadow: 0 0 0 3px rgba(57,142,134,.12);
+		}
+
+		.password-container {
+			position: relative;
+		}
+
+		.password-container input {
+			padding-right: 45px;
+		}
+
+		.password-container button {
+			position: absolute;
+			top: 50%;
+			right: 12px;
+			transform: translateY(-50%);
+			border: none;
+			background: transparent;
+			cursor: pointer;
+			font-size: 20px;
+			color: #6c7c84;
+		}
+
+		.login-button {
+			width: 100%;
+			border: none;
+			padding: 14px;
+			background: #277970;
+			color: white;
+			border-radius: 9px;
+			font-size: 16px;
+			font-family: inherit;
+			font-weight: 700;
+			cursor: pointer;
+			transition: .2s;
+			margin-top: 5px;
+		}
+
+		.login-button:hover {
+			background: #1f665f;
+			transform: translateY(-1px);
+		}
+
+		#error-message {
+			display: none;
+			background: #fff1f1;
+			color: #b83232;
+			padding: 11px 13px;
+			border-radius: 8px;
+			font-size: 14px;
+			margin-bottom: 17px;
+			border: 1px solid #ffd0d0;
+		}
+
+
+		/* =========================
+		   SISTEMA
+		========================= */
+
+		#system-page {
+			display: none;
+			min-height: 100vh;
+		}
+
+		.header {
+			background: #ffffff;
+			padding: 17px 35px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			box-shadow: 0 2px 12px rgba(0,0,0,.06);
+			position: sticky;
+			top: 0;
+			z-index: 10;
+		}
+
+		.header-left {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+		}
+
+		.header-left img {
+			width: 65px;
+			height: auto;
+		}
+
+		.header-title h1 {
+			font-size: 22px;
+			color: #205f59;
+		}
+
+		.header-title p {
+			color: #88969d;
+			font-size: 13px;
+			margin-top: 3px;
+		}
+
+		.user-area {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.user-info {
+			text-align: right;
+		}
+
+		.user-info strong {
+			display: block;
+			font-size: 14px;
+			color: #31434c;
+		}
+
+		.user-info span {
+			font-size: 12px;
+			color: #89969c;
+		}
+
+		.logout-button {
+			width: 39px;
+			height: 39px;
+			border-radius: 9px;
+			border: 1px solid #e1e7ea;
+			background: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			color: #68777e;
+			font-size: 21px;
+			transition: .2s;
+		}
+
+		.logout-button:hover {
+			background: #fff0f0;
+			color: #bd3838;
+			border-color: #f2cccc;
+		}
+
+
+		/* =========================
+		   CONTEÚDO
+		========================= */
+
+		main {
+			max-width: 1150px;
+			margin: auto;
+			padding: 45px 25px 65px;
+		}
+
+		.welcome {
+			margin-bottom: 30px;
+		}
+
+		.welcome h2 {
+			font-size: 27px;
+			color: #243840;
+			margin-bottom: 7px;
+		}
+
+		.welcome p {
+			color: #74848c;
+			font-size: 15px;
+		}
+
+		.structure {
+			display: grid;
+			grid-template-columns:
+				repeat(auto-fit, minmax(230px, 1fr));
+			gap: 18px;
+		}
+
+		.structure a {
+			background: white;
+			min-height: 145px;
+			padding: 24px;
+			border-radius: 14px;
+			text-decoration: none;
+			color: #33474f;
+
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: flex-start;
+			gap: 15px;
+
+			border: 1px solid #edf1f2;
+
+			box-shadow:
+				0 4px 14px rgba(0,0,0,.045);
+
+			transition: .22s;
+			font-size: 16px;
+			font-weight: 700;
+		}
+
+		.structure a ion-icon {
+			font-size: 31px;
+			color: #277970;
+		}
+
+		.structure a:hover {
+			transform: translateY(-4px);
+			box-shadow:
+				0 10px 25px rgba(0,0,0,.09);
+			border-color: #cce2df;
+		}
+
+		.tool-description {
+			font-size: 12px;
+			font-weight: 400;
+			color: #849199;
+			line-height: 1.4;
+		}
+
+		.badge {
+			font-size: 10px;
+			text-transform: uppercase;
+			background: #e7f4f2;
+			color: #26766e;
+			padding: 4px 7px;
+			border-radius: 20px;
+			font-weight: 700;
+		}
+
+
+		/* =========================
+		   FOOTER
+		========================= */
+
+		footer {
+			text-align: center;
+			padding: 25px;
+			color: #849097;
+			font-size: 13px;
+		}
+
+		footer a {
+			text-decoration: none;
+			color: #277970;
+			font-weight: 700;
+		}
+
+
+		/* =========================
+		   RESPONSIVO
+		========================= */
+
+		@media(max-width: 650px) {
+
+			.login-card {
+				padding: 28px 24px;
+			}
+
+			.header {
+				padding: 13px 16px;
+			}
+
+			.header-left img {
+				width: 52px;
+			}
+
+			.header-title h1 {
+				font-size: 17px;
+			}
+
+			.header-title p {
+				display: none;
+			}
+
+			.user-info {
+				display: none;
+			}
+
+			main {
+				padding: 30px 18px 50px;
+			}
+
+			.welcome h2 {
+				font-size: 22px;
+			}
+
+			.structure {
+				grid-template-columns: 1fr;
+			}
+
+			.structure a {
+				min-height: 115px;
+			}
+		}
+
+	</style>
 </head>
+
 
 <body>
 
-	<!-- LOGO -->
-	<div class="header">
-		<img src="logo_hrec.png" alt="Logo HREC">
-		<h1>Coordenação Médica</h1>
+<!-- =========================
+     LOGIN
+========================= -->
+
+<section id="login-page">
+
+	<div class="login-card">
+
+		<div class="login-logo">
+
+			<img
+				src="logo_hrec.png"
+				alt="Logo HREC"
+			>
+
+			<h1>Coordenação Médica</h1>
+
+			<p>
+				Hospital Regional Emília Câmara
+			</p>
+
+		</div>
+
+
+		<div id="error-message">
+			Usuário ou senha incorretos.
+		</div>
+
+
+		<form id="login-form">
+
+			<div class="form-group">
+
+				<label for="username">
+					Usuário
+				</label>
+
+				<input
+					type="text"
+					id="username"
+					autocomplete="username"
+					placeholder="Digite seu usuário"
+					required
+				>
+
+			</div>
+
+
+			<div class="form-group">
+
+				<label for="password">
+					Senha
+				</label>
+
+				<div class="password-container">
+
+					<input
+						type="password"
+						id="password"
+						autocomplete="current-password"
+						placeholder="Digite sua senha"
+						required
+					>
+
+					<button
+						type="button"
+						onclick="togglePassword()"
+						title="Mostrar senha"
+					>
+						<ion-icon
+							id="password-icon"
+							name="eye-outline">
+						</ion-icon>
+					</button>
+
+				</div>
+
+			</div>
+
+
+			<button
+				type="submit"
+				class="login-button"
+			>
+				Entrar
+			</button>
+
+		</form>
+
 	</div>
 
-	<!-- MENU -->
-	<div class="structure">
+</section>
 
-		<a href="pages/escalas_mensais.html" target="_blank">
-			<ion-icon name="calendar-outline"></ion-icon>
-			Escalas Mensais
-		</a>
-		<a href="https://agendas-ambulatoriais.vercel.app/" target="_blank">
-			<ion-icon name="calendar-number-outline"></ion-icon>
-			Agendas (Secretaria)
-		</a>
-		<a href="pages/relatorio.html" target="_blank">
-			<ion-icon name="document-text-outline"></ion-icon>
-			Escalas Diárias
-		</a>
 
-		<a href="pages/contagem.html" target="_blank">
-			<ion-icon name="pulse-outline"></ion-icon>
-			Evoluções
-		</a>
 
-		<a href="pages/cirurgias.html" target="_blank">
-			<ion-icon name="medkit-outline"></ion-icon>
-			Cirurgias - Parser
-		</a>
+<!-- =========================
+     SISTEMA
+========================= -->
 
-		<a href="pages/presenca.html" target="_blank">
-			<ion-icon name="people-outline"></ion-icon>
-			Presença
-		</a>
+<section id="system-page">
 
-		<a href="pages/plantoes-executados.html" target="_blank">
-			<ion-icon name="calendar-outline"></ion-icon>
-			Plantões executados
-		</a>
+	<header class="header">
 
-		<a href="pages/emergencia.html" target="_blank">
-			<ion-icon name="medical-outline"></ion-icon>
-			Emergência
-		</a>
+		<div class="header-left">
 
-	</div>
+			<img
+				src="logo_hrec.png"
+				alt="Logo HREC"
+			>
 
-	<!-- FOOTER -->
+			<div class="header-title">
+
+				<h1>Coordenação Médica</h1>
+
+				<p>
+					Hospital Regional Emília Câmara
+				</p>
+
+			</div>
+
+		</div>
+
+
+		<div class="user-area">
+
+			<div class="user-info">
+
+				<strong id="logged-user">
+					Usuário
+				</strong>
+
+				<span id="user-profile">
+					Coordenação Médica
+				</span>
+
+			</div>
+
+
+			<button
+				class="logout-button"
+				onclick="logout()"
+				title="Sair"
+			>
+				<ion-icon name="log-out-outline"></ion-icon>
+			</button>
+
+		</div>
+
+	</header>
+
+
+
+	<main>
+
+		<div class="welcome">
+
+			<h2 id="welcome-title">
+				Ferramentas
+			</h2>
+
+			<p>
+				Selecione uma ferramenta para continuar.
+			</p>
+
+		</div>
+
+
+
+		<div class="structure" id="menu">
+
+			<!-- ESCALAS MENSAIS -->
+
+			<a
+				href="pages/escalas_mensais.html"
+				data-permission="admin"
+			>
+
+				<ion-icon name="calendar-outline"></ion-icon>
+
+				<div>
+					Escalas Mensais
+				</div>
+
+				<span class="tool-description">
+					Criação e gerenciamento das escalas mensais.
+				</span>
+
+			</a>
+
+
+			<!-- AGENDAS -->
+
+			<a
+				href="https://agendas-ambulatoriais.vercel.app/"
+				data-permission="admin"
+			>
+
+				<ion-icon name="calendar-number-outline"></ion-icon>
+
+				<div>
+					Agendas
+				</div>
+
+				<span class="tool-description">
+					Agendas ambulatoriais da secretaria.
+				</span>
+
+			</a>
+
+
+			<!-- ESCALAS DIÁRIAS -->
+
+			<a
+				href="pages/relatorio.html"
+				data-permission="admin"
+			>
+
+				<ion-icon name="document-text-outline"></ion-icon>
+
+				<div>
+					Escalas Diárias
+				</div>
+
+				<span class="tool-description">
+					Geração e consulta das escalas diárias.
+				</span>
+
+			</a>
+
+
+			<!-- EVOLUÇÕES -->
+
+			<a
+				href="pages/contagem.html"
+				data-permission="all"
+			>
+
+				<ion-icon name="pulse-outline"></ion-icon>
+
+				<div>
+					Evoluções
+				</div>
+
+				<span class="tool-description">
+					Processamento e contagem das evoluções médicas.
+				</span>
+
+			</a>
+
+
+			<!-- CIRURGIAS -->
+
+			<a
+				href="pages/cirurgias.html"
+				data-permission="admin"
+			>
+
+				<ion-icon name="medkit-outline"></ion-icon>
+
+				<div>
+					Cirurgias - Parser
+				</div>
+
+				<span class="tool-description">
+					Processamento dos relatórios cirúrgicos.
+				</span>
+
+			</a>
+
+
+			<!-- PRESENÇA -->
+
+			<a
+				href="pages/presenca.html"
+				data-permission="admin"
+			>
+
+				<ion-icon name="people-outline"></ion-icon>
+
+				<div>
+					Presença
+				</div>
+
+				<span class="tool-description">
+					Controle de presença médica.
+				</span>
+
+			</a>
+
+
+			<!-- PLANTÕES -->
+
+			<a
+				href="pages/plantoes-executados.html"
+				data-permission="all"
+			>
+
+				<ion-icon name="time-outline"></ion-icon>
+
+				<div>
+					Plantões executados
+				</div>
+
+				<span class="tool-description">
+					Consulta e processamento dos plantões realizados.
+				</span>
+
+			</a>
+
+
+			<!-- EMERGÊNCIA -->
+
+			<a
+				href="pages/emergencia.html"
+				data-permission="admin"
+			>
+
+				<ion-icon name="medical-outline"></ion-icon>
+
+				<div>
+					Emergência
+				</div>
+
+				<span class="tool-description">
+					Ferramentas e relatórios da emergência.
+				</span>
+
+			</a>
+
+		</div>
+
+	</main>
+
+
+
 	<footer>
+
 		<p>
 			Copyright &copy; |
-			<a href="https://github.com/wenderclaytonfilho" target="_blank">
+			<a
+				href="https://github.com/wenderclaytonfilho"
+			>
 				Wender Filho
 			</a>
 		</p>
+
 	</footer>
 
-	<!-- ICONES -->
-	<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-	<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</section>
+
+
+
+<!-- =========================
+     IONICONS
+========================= -->
+
+<script
+	type="module"
+	src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js">
+</script>
+
+<script
+	nomodule
+	src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js">
+</script>
+
+
+
+<script>
+
+	/* =========================================
+	   USUÁRIOS
+	========================================= */
+
+	const usuarios = {
+
+		wender: {
+			senha: "admin2802",
+			nome: "Wender",
+			perfil: "Administrador",
+			acesso: "admin"
+		},
+
+		vitoria: {
+			senha: "hrec2026",
+			nome: "Vitória",
+			perfil: "Administrador",
+			acesso: "admin"
+		},
+
+		amanda: {
+			senha: "hrec2026",
+			nome: "Amanda",
+			perfil: "Acesso limitado",
+			acesso: "limitado"
+		}
+
+	};
+
+
+
+	/* =========================================
+	   LOGIN
+	========================================= */
+
+	document
+		.getElementById("login-form")
+		.addEventListener("submit", function(event) {
+
+			event.preventDefault();
+
+			const username =
+				document
+				.getElementById("username")
+				.value
+				.trim()
+				.toLowerCase();
+
+			const password =
+				document
+					.getElementById("password")
+					.value;
+
+			const usuario = usuarios[username];
+
+			if (
+				usuario &&
+				usuario.senha === password
+			) {
+
+				sessionStorage.setItem(
+					"hrecUsuario",
+					username
+				);
+
+				abrirSistema(username);
+
+			} else {
+
+				const erro =
+					document.getElementById(
+						"error-message"
+					);
+
+				erro.style.display = "block";
+
+			}
+
+		});
+
+
+
+	/* =========================================
+	   ABRIR SISTEMA
+	========================================= */
+
+	function abrirSistema(username) {
+
+		const usuario = usuarios[username];
+
+		if (!usuario) {
+			logout();
+			return;
+		}
+
+		document.getElementById(
+			"login-page"
+		).style.display = "none";
+
+		document.getElementById(
+			"system-page"
+		).style.display = "block";
+
+
+		document.getElementById(
+			"logged-user"
+		).textContent = usuario.nome;
+
+
+		document.getElementById(
+			"user-profile"
+		).textContent = usuario.perfil;
+
+
+		document.getElementById(
+			"welcome-title"
+		).textContent =
+			"Olá, " + usuario.nome + "!";
+
+
+		aplicarPermissoes(usuario);
+
+	}
+
+
+
+	/* =========================================
+	   PERMISSÕES
+	========================================= */
+
+	function aplicarPermissoes(usuario) {
+
+		const ferramentas =
+			document.querySelectorAll(
+				"[data-permission]"
+			);
+
+		ferramentas.forEach(ferramenta => {
+
+			const permissao =
+				ferramenta.dataset.permission;
+
+			/* Administradores veem tudo */
+
+			if (usuario.acesso === "admin") {
+
+				ferramenta.style.display = "flex";
+				return;
+
+			}
+
+
+			/* Amanda só vê itens marcados ALL */
+
+			if (
+				usuario.acesso === "limitado" &&
+				permissao === "all"
+			) {
+
+				ferramenta.style.display = "flex";
+
+			} else {
+
+				ferramenta.style.display = "none";
+
+			}
+
+		});
+
+	}
+
+
+
+	/* =========================================
+	   LOGOUT
+	========================================= */
+
+	function logout() {
+
+		sessionStorage.removeItem(
+			"hrecUsuario"
+		);
+
+		document.getElementById(
+			"system-page"
+		).style.display = "none";
+
+		document.getElementById(
+			"login-page"
+		).style.display = "flex";
+
+		document.getElementById(
+			"login-form"
+		).reset();
+
+		document.getElementById(
+			"error-message"
+		).style.display = "none";
+
+	}
+
+
+
+	/* =========================================
+	   MOSTRAR / ESCONDER SENHA
+	========================================= */
+
+	function togglePassword() {
+
+		const input =
+			document.getElementById("password");
+
+		const icon =
+			document.getElementById(
+				"password-icon"
+			);
+
+		if (input.type === "password") {
+
+			input.type = "text";
+			icon.setAttribute(
+				"name",
+				"eye-off-outline"
+			);
+
+		} else {
+
+			input.type = "password";
+			icon.setAttribute(
+				"name",
+				"eye-outline"
+			);
+
+		}
+
+	}
+
+
+
+	/* =========================================
+	   RESTAURAR SESSÃO
+	========================================= */
+
+	window.addEventListener(
+		"DOMContentLoaded",
+		function() {
+
+			const usuarioSalvo =
+				sessionStorage.getItem(
+					"hrecUsuario"
+				);
+
+			if (
+				usuarioSalvo &&
+				usuarios[usuarioSalvo]
+			) {
+
+				abrirSistema(
+					usuarioSalvo
+				);
+
+			}
+
+		}
+	);
+
+</script>
 
 </body>
-
 </html>

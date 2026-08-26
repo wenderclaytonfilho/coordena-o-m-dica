@@ -1,260 +1,1549 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f766e">
     <title>Relatório de Presença Médica</title>
 
     <style>
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #0b5f59;
+            --primary-soft: #e8f7f5;
+            --secondary: #0f4c81;
+            --secondary-soft: #eaf3fb;
+            --accent: #2f9e89;
+            --success: #17875f;
+            --warning: #b7791f;
+            --danger: #c2414b;
+            --text: #183042;
+            --text-soft: #627586;
+            --muted: #8da0ae;
+            --border: #dce7ec;
+            --surface: #ffffff;
+            --surface-2: #f7fafb;
+            --bg: #eef5f7;
+            --shadow: 0 14px 38px rgba(29, 72, 88, 0.09);
+            --shadow-sm: 0 6px 18px rgba(29, 72, 88, 0.08);
+            --radius: 18px;
+            --radius-sm: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #eef2f7;
-            padding: 30px;
             margin: 0;
+            min-height: 100vh;
+            font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 10% 0%, rgba(15, 118, 110, 0.08), transparent 28%),
+                linear-gradient(180deg, #f7fbfc 0, var(--bg) 300px, #edf3f5 100%);
         }
 
-        .container {
-            max-width: 1400px;
-            margin: auto;
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        h1,
-        h2,
-        h3 {
-            color: #1f2937;
+        button,
+        input {
+            font: inherit;
         }
 
         button {
-            padding: 10px 16px;
-            margin: 10px 5px 20px 0;
-            border: none;
-            border-radius: 8px;
-            background: #2563eb;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
+            border: 0;
         }
 
-        button:hover {
-            opacity: 0.9;
+        .app-shell {
+            min-height: 100vh;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(220, 231, 236, 0.92);
+        }
+
+        .topbar-inner {
+            width: min(1480px, calc(100% - 40px));
+            min-height: 76px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand-mark {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            color: white;
+            background: linear-gradient(145deg, var(--primary), #159486);
+            box-shadow: 0 9px 20px rgba(15, 118, 110, 0.24);
+            flex: 0 0 auto;
+        }
+
+        .brand-mark svg {
+            width: 25px;
+            height: 25px;
+        }
+
+        .brand-copy strong {
+            display: block;
+            font-size: 15px;
+            letter-spacing: 0.01em;
+        }
+
+        .brand-copy span {
+            display: block;
+            margin-top: 2px;
+            color: var(--text-soft);
+            font-size: 12px;
+        }
+
+        .topbar-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-dark);
+            background: var(--primary-soft);
+            border: 1px solid #ccece8;
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #20a67e;
+            box-shadow: 0 0 0 4px rgba(32, 166, 126, 0.12);
+        }
+
+        main {
+            width: min(1480px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 34px 0 56px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: end;
+            gap: 24px;
+            margin-bottom: 25px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin: 7px 0 8px;
+            font-size: clamp(28px, 4vw, 42px);
+            line-height: 1.08;
+            letter-spacing: -0.035em;
+            color: #153246;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 760px;
+            color: var(--text-soft);
+            font-size: 15px;
+            line-height: 1.65;
+        }
+
+        .hero-note {
+            min-width: 210px;
+            padding: 13px 15px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            color: var(--text-soft);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .hero-note strong {
+            color: var(--text);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            color: var(--primary);
+            background: var(--primary-soft);
+            flex: 0 0 auto;
+        }
+
+        .stat-icon.blue {
+            color: var(--secondary);
+            background: var(--secondary-soft);
+        }
+
+        .stat-icon.gold {
+            color: #9a6a18;
+            background: #fff7dc;
+        }
+
+        .stat-icon.violet {
+            color: #6b55a8;
+            background: #f1edfb;
+        }
+
+        .stat-icon svg {
+            width: 23px;
+            height: 23px;
+        }
+
+        .stat-copy {
+            min-width: 0;
+        }
+
+        .stat-label {
+            color: var(--text-soft);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .stat-value {
+            margin-top: 3px;
+            color: #17394d;
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .panel + .panel {
+            margin-top: 22px;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 21px 22px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .panel-title-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            color: var(--primary);
+            background: var(--primary-soft);
+            flex: 0 0 auto;
+        }
+
+        .panel-title-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .panel-title h2 {
+            margin: 0;
+            color: #17394d;
+            font-size: 17px;
+            letter-spacing: -0.015em;
+        }
+
+        .panel-title p {
+            margin: 3px 0 0;
+            color: var(--text-soft);
+            font-size: 12px;
+        }
+
+        .upload-panel {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(310px, 0.7fr);
+            gap: 20px;
+            padding: 22px;
+        }
+
+        .dropzone {
+            position: relative;
+            min-height: 164px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            padding: 24px;
+            border: 1.5px dashed #9ecfc8;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #f7fdfc, #f3f9fb);
+            cursor: pointer;
+            transition: 0.2s ease;
+            text-align: left;
+        }
+
+        .dropzone:hover,
+        .dropzone.dragover {
+            border-color: var(--primary);
+            background: #f0fbf8;
+            transform: translateY(-1px);
+            box-shadow: inset 0 0 0 1px rgba(15, 118, 110, 0.05);
+        }
+
+        .dropzone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            width: 56px;
+            height: 56px;
+            display: grid;
+            place-items: center;
+            border-radius: 17px;
+            color: white;
+            background: linear-gradient(145deg, var(--primary), #1a9688);
+            box-shadow: 0 9px 20px rgba(15, 118, 110, 0.2);
+            flex: 0 0 auto;
+        }
+
+        .upload-icon svg {
+            width: 27px;
+            height: 27px;
+        }
+
+        .dropzone h3 {
+            margin: 0 0 6px;
+            color: #17394d;
+            font-size: 16px;
+        }
+
+        .dropzone p {
+            margin: 0;
+            color: var(--text-soft);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .file-name {
+            display: inline-flex;
+            margin-top: 9px;
+            max-width: 100%;
+            padding: 5px 9px;
+            border-radius: 8px;
+            color: var(--primary-dark);
+            background: #e5f6f2;
+            font-size: 11px;
+            font-weight: 800;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .action-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 19px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--surface-2);
+        }
+
+        .action-box-copy strong {
+            display: block;
+            color: #17394d;
+            font-size: 14px;
+        }
+
+        .action-box-copy span {
+            display: block;
+            margin-top: 5px;
+            color: var(--text-soft);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .btn {
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 11px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 900;
+            transition: 0.18s ease;
+        }
+
+        .btn svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .btn-primary {
+            color: white;
+            background: linear-gradient(135deg, var(--primary), #14887e);
+            box-shadow: 0 7px 16px rgba(15, 118, 110, 0.22);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(15, 118, 110, 0.27);
+        }
+
+        .btn-secondary {
+            color: #355363;
+            background: #ffffff;
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            border-color: #b7cbd4;
+            background: #f9fcfd;
+        }
+
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.48;
+            box-shadow: none;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border);
+            background: #fbfdfd;
+        }
+
+        .search-wrap {
+            position: relative;
+            width: min(540px, 100%);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            width: 18px;
+            height: 18px;
+            transform: translateY(-50%);
+            color: #7c919f;
+            pointer-events: none;
         }
 
         .busca {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
+            height: 44px;
+            padding: 0 42px 0 43px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            outline: none;
+            color: var(--text);
+            background: white;
+            font-size: 13px;
+            transition: 0.18s ease;
+        }
+
+        .busca::placeholder {
+            color: #9aabb5;
+        }
+
+        .busca:focus {
+            border-color: #7fc2b8;
+            box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.08);
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            width: 30px;
+            height: 30px;
+            display: none;
+            place-items: center;
+            transform: translateY(-50%);
             border-radius: 8px;
-            font-size: 15px;
+            color: #718591;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .clear-search:hover {
+            background: #eef4f6;
+        }
+
+        .table-counter {
+            color: var(--text-soft);
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .table-wrap {
+            position: relative;
+            overflow: auto;
+            max-height: min(68vh, 760px);
+            border-top: 1px solid #e7eef1;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            background: #ffffff;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
+            min-width: 980px;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
-        th {
-            background: #2563eb;
-            color: white;
-            padding: 12px;
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 4;
+            padding: 13px 16px;
+            color: #506b79;
+            background: #f3f8f9;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 0 #e7eef1;
+            font-size: 11px;
+            letter-spacing: 0.055em;
             text-align: left;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
 
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+        tbody td {
+            padding: 15px 16px;
+            border-bottom: 1px solid #ebf1f3;
+            color: #395564;
+            font-size: 13px;
+            line-height: 1.5;
             vertical-align: top;
+            background: #ffffff;
         }
 
-        tr:hover {
-            background: #f9fafb;
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        tbody tr:hover td {
+            background: #f8fcfc;
+        }
+
+        .doctor-cell {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            min-width: 250px;
+            color: #17394d;
+            font-weight: 800;
+        }
+
+        .doctor-avatar {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            border-radius: 10px;
+            color: var(--primary-dark);
+            background: var(--primary-soft);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .sector-tags,
+        .days-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 7px;
+            border-radius: 7px;
+            color: #3c6070;
+            background: #edf4f6;
+            font-size: 11px;
+            font-weight: 750;
+        }
+
+        .tag.day {
+            color: var(--secondary);
+            background: var(--secondary-soft);
+        }
+
+        .plantao-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            padding: 5px 9px;
+            border-radius: 999px;
+            color: var(--primary-dark);
+            background: var(--primary-soft);
+            font-size: 12px;
+            font-weight: 900;
         }
 
         .obs {
-            font-size: 14px;
-            color: #374151;
+            color: #667d89;
+            font-size: 12px;
+        }
+
+        .obs-item + .obs-item {
+            margin-top: 5px;
+        }
+
+        .empty-table {
+            padding: 42px 24px !important;
+            text-align: center;
+            color: var(--text-soft);
+        }
+
+        .empty-table strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #355363;
+        }
+
+        .calendar-body {
+            padding: 22px;
         }
 
         .calendario {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(126px, 1fr));
+            gap: 10px;
         }
 
         .dia {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            min-height: 94px;
+            padding: 13px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            color: #355363;
+            background: #fbfdfd;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            transition: 0.2s;
+            text-align: left;
+            transition: 0.18s ease;
+        }
+
+        .dia::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #7fc9bf;
         }
 
         .dia:hover {
-            transform: scale(1.03);
-            opacity: 0.95;
+            transform: translateY(-2px);
+            border-color: #a9d7d0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .dia.ativo {
+            color: white;
+            border-color: var(--primary);
+            background: linear-gradient(145deg, var(--primary), #178d81);
+            box-shadow: 0 10px 20px rgba(15, 118, 110, 0.2);
+        }
+
+        .dia.ativo::before {
+            background: rgba(255,255,255,.72);
+        }
+
+        .day-week {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 10px;
+            font-weight: 900;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            opacity: 0.78;
+        }
+
+        .day-date {
+            display: block;
+            font-size: 19px;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+        }
+
+        .day-count {
+            display: block;
+            margin-top: 5px;
+            font-size: 10px;
+            font-weight: 750;
+            opacity: 0.78;
+        }
+
+        .calendar-empty {
+            display: grid;
+            place-items: center;
+            min-height: 165px;
+            padding: 24px;
+            border: 1px dashed #cbdce2;
+            border-radius: 14px;
+            color: var(--text-soft);
+            background: #fbfdfd;
+            text-align: center;
+            font-size: 13px;
         }
 
         .detalhes-dia {
-            margin-top: 25px;
+            margin-top: 18px;
             padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #f8fbfc;
+        }
+
+        .details-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .details-head h3 {
+            margin: 0;
+            color: #17394d;
+            font-size: 16px;
+        }
+
+        .details-head span {
+            color: var(--text-soft);
+            font-size: 11px;
+            font-weight: 750;
+        }
+
+        .setores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 10px;
         }
 
         .setor-bloco {
-            margin-bottom: 15px;
-            padding: 12px;
+            padding: 14px;
+            border: 1px solid #e0eaee;
+            border-radius: 13px;
             background: white;
-            border-radius: 8px;
-            border-left: 4px solid #2563eb;
+        }
+
+        .setor-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-bottom: 9px;
+            margin-bottom: 9px;
+            border-bottom: 1px solid #edf2f4;
+            color: #2d5160;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .setor-count {
+            padding: 3px 7px;
+            border-radius: 999px;
+            color: var(--primary-dark);
+            background: var(--primary-soft);
+            font-size: 10px;
+        }
+
+        .medico-dia {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 6px 0;
+            color: #526c78;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .medico-dia::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            margin-top: 6px;
+            border-radius: 50%;
+            background: #64b8aa;
+            flex: 0 0 auto;
+        }
+
+        .placeholder-detail {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: var(--text-soft);
+            font-size: 13px;
+        }
+
+        .placeholder-detail svg {
+            width: 20px;
+            height: 20px;
+            color: var(--primary);
+        }
+
+        .footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: 20px;
+            padding: 0 3px;
+            color: #8397a2;
+            font-size: 11px;
+        }
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            z-index: 80;
+            min-width: 250px;
+            max-width: min(410px, calc(100vw - 44px));
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 15px;
+            border: 1px solid #cfe5df;
+            border-radius: 13px;
+            color: #275747;
+            background: rgba(246, 255, 251, 0.98);
+            box-shadow: 0 16px 34px rgba(23, 65, 73, 0.16);
+            font-size: 12px;
+            font-weight: 750;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: 0.22s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.error {
+            color: #8d313c;
+            border-color: #efcfd4;
+            background: #fff8f8;
+        }
+
+        .toast svg {
+            width: 18px;
+            height: 18px;
+            flex: 0 0 auto;
+        }
+
+        @media (max-width: 980px) {
+            .hero,
+            .upload-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .hero-note {
+                min-width: 0;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .topbar-inner,
+            main {
+                width: min(100% - 24px, 1480px);
+            }
+
+            main {
+                padding-top: 24px;
+            }
+
+            .topbar-inner {
+                min-height: 68px;
+            }
+
+            .brand-copy span,
+            .topbar-badge {
+                display: none;
+            }
+
+            .hero {
+                margin-bottom: 19px;
+            }
+
+            .hero h1 {
+                font-size: 29px;
+            }
+
+            .stats-grid {
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 14px;
+            }
+
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 12px;
+            }
+
+            .stat-value {
+                font-size: 22px;
+            }
+
+            .panel-header,
+            .toolbar,
+            .upload-panel,
+            .calendar-body {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .table-counter {
+                padding-left: 2px;
+            }
+
+            .dropzone {
+                min-height: 150px;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .footer {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 460px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .actions .btn {
+                width: 100%;
+            }
+
+            .calendario {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media print {
+            .topbar,
+            .hero-note,
+            .upload-section,
+            .toolbar,
+            .calendar-panel,
+            .footer,
+            .toast {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            main {
+                width: 100%;
+                padding: 0;
+            }
+
+            .hero {
+                display: block;
+                margin-bottom: 16px;
+            }
+
+            .stats-grid {
+                box-shadow: none;
+            }
+
+            .panel,
+            .stat-card {
+                box-shadow: none;
+            }
+
+            thead th {
+                position: static;
+            }
         }
     </style>
 </head>
-
 <body>
+    <div class="app-shell">
+        <header class="topbar">
+            <div class="topbar-inner">
+                <div class="brand">
+                    <div class="brand-mark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v20M2 12h20" />
+                        </svg>
+                    </div>
+                    <div class="brand-copy">
+                        <strong>Gestão Médica</strong>
+                        <span>Painel de presença e plantões</span>
+                    </div>
+                </div>
 
-    <div class="container">
+                <div class="topbar-badge">
+                    <span class="status-dot"></span>
+                    Direção Médica
+                </div>
+            </div>
+        </header>
 
-        <h1>Relatório de Presença Médica</h1>
+        <main>
+            <section class="hero">
+                <div>
+                    <div class="eyebrow">
+                        <span>●</span>
+                        Controle de presença
+                    </div>
+                    <h1>Relatório de Presença Médica</h1>
+                    <p>Importe os relatórios diários para consolidar plantões, visualizar médicos por setor, consultar dias trabalhados e exportar o resultado em poucos cliques.</p>
+                </div>
+                <div class="hero-note">
+                    <strong>Processamento local</strong><br>
+                    O arquivo é lido diretamente no seu navegador e não é enviado para um servidor.
+                </div>
+            </section>
 
-        <input type="file" id="arquivo">
+            <section class="stats-grid" aria-label="Resumo do relatório">
+                <article class="stat-card">
+                    <div class="stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                    </div>
+                    <div class="stat-copy">
+                        <div class="stat-label">Médicos</div>
+                        <div class="stat-value" id="statMedicos">0</div>
+                    </div>
+                </article>
 
-        <br>
+                <article class="stat-card">
+                    <div class="stat-icon blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 2v4M16 2v4M3 10h18" />
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <path d="m9 16 2 2 4-4" />
+                        </svg>
+                    </div>
+                    <div class="stat-copy">
+                        <div class="stat-label">Plantões</div>
+                        <div class="stat-value" id="statPlantoes">0</div>
+                    </div>
+                </article>
 
-        <button onclick="processar()">Processar Relatório</button>
-        <button onclick="exportar()">Exportar TXT</button>
-        <button onclick="exportarExcel()">Exportar Excel</button>
+                <article class="stat-card">
+                    <div class="stat-icon gold">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="5" width="18" height="16" rx="2" />
+                            <path d="M16 3v4M8 3v4M3 11h18" />
+                        </svg>
+                    </div>
+                    <div class="stat-copy">
+                        <div class="stat-label">Dias processados</div>
+                        <div class="stat-value" id="statDias">0</div>
+                    </div>
+                </article>
 
-        <input class="busca" placeholder="Buscar médico ou setor..."
-            onkeyup="filtrar(this.value)">
+                <article class="stat-card">
+                    <div class="stat-icon violet">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 21h18" />
+                            <path d="M5 21V7l8-4v18" />
+                            <path d="M13 9h6v12" />
+                            <path d="M8 9v.01M8 13v.01M8 17v.01M16 13v.01M16 17v.01" />
+                        </svg>
+                    </div>
+                    <div class="stat-copy">
+                        <div class="stat-label">Setores</div>
+                        <div class="stat-value" id="statSetores">0</div>
+                    </div>
+                </article>
+            </section>
 
-        <table id="tabela">
-            <thead>
-                <tr>
-                    <th>Médico</th>
-                    <th>Setor</th>
-                    <th>Total de Plantões</th>
-                    <th>Dias Trabalhados</th>
-                    <th>Observações</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+            <section class="panel upload-section">
+                <div class="panel-header">
+                    <div class="panel-title-wrap">
+                        <div class="panel-title-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 3v12" />
+                                <path d="m7 8 5-5 5 5" />
+                                <path d="M5 21h14a2 2 0 0 0 2-2v-4" />
+                                <path d="M3 15v4a2 2 0 0 0 2 2" />
+                            </svg>
+                        </div>
+                        <div class="panel-title">
+                            <h2>Importar relatórios</h2>
+                            <p>Selecione o arquivo TXT contendo os relatórios de presença médica.</p>
+                        </div>
+                    </div>
+                </div>
 
-        <h2>Calendário de Plantões</h2>
-        <div id="calendario" class="calendario"></div>
+                <div class="upload-panel">
+                    <label class="dropzone" id="dropzone" for="arquivo">
+                        <input type="file" id="arquivo" accept=".txt,text/plain">
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <path d="M14 2v6h6" />
+                                <path d="M12 18v-6" />
+                                <path d="m9 15 3-3 3 3" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3>Arraste o arquivo aqui ou clique para selecionar</h3>
+                            <p>Formato esperado: arquivo de texto contendo blocos “RELATÓRIO DE PRESENÇA MÉDICA”.</p>
+                            <span class="file-name" id="fileName">Nenhum arquivo selecionado</span>
+                        </div>
+                    </label>
 
-        <div id="detalhesDia" class="detalhes-dia">
-            <h3>Selecione um dia</h3>
-            <div id="conteudoDia"></div>
-        </div>
+                    <div class="action-box">
+                        <div class="action-box-copy">
+                            <strong>Ações do relatório</strong>
+                            <span>Primeiro processe o arquivo. Depois, você poderá exportar o consolidado em TXT ou Excel.</span>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-primary" id="btnProcessar" onclick="processar()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2v20M2 12h20" />
+                                </svg>
+                                Processar relatório
+                            </button>
+                            <button class="btn btn-secondary" id="btnTxt" onclick="exportar()" disabled>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <path d="m7 10 5 5 5-5" />
+                                    <path d="M12 15V3" />
+                                </svg>
+                                Exportar TXT
+                            </button>
+                            <button class="btn btn-secondary" id="btnExcel" onclick="exportarExcel()" disabled>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                    <path d="M14 2v6h6" />
+                                    <path d="m9 13 6 6M15 13l-6 6" />
+                                </svg>
+                                Exportar Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
+            <section class="panel" aria-labelledby="tabelaTitulo">
+                <div class="panel-header">
+                    <div class="panel-title-wrap">
+                        <div class="panel-title-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 11l3 3L22 4" />
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                            </svg>
+                        </div>
+                        <div class="panel-title">
+                            <h2 id="tabelaTitulo">Consolidado por médico</h2>
+                            <p>Visão resumida dos setores, plantões, dias e observações.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="toolbar">
+                    <div class="search-wrap">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.35-4.35" />
+                        </svg>
+                        <input class="busca" id="busca" placeholder="Buscar médico ou setor..." oninput="filtrar(this.value)">
+                        <button class="clear-search" id="clearSearch" type="button" onclick="limparBusca()" aria-label="Limpar busca">×</button>
+                    </div>
+                    <div class="table-counter" id="tableCounter">Nenhum registro processado</div>
+                </div>
+
+                <div class="table-wrap">
+                    <table id="tabela">
+                        <thead>
+                            <tr>
+                                <th>Médico</th>
+                                <th>Setor</th>
+                                <th>Plantões</th>
+                                <th>Dias trabalhados</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="empty-table" colspan="5">
+                                    <strong>Aguardando relatório</strong>
+                                    Importe e processe um arquivo para visualizar os dados consolidados.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="panel calendar-panel">
+                <div class="panel-header">
+                    <div class="panel-title-wrap">
+                        <div class="panel-title-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" />
+                                <path d="M16 2v4M8 2v4M3 10h18" />
+                            </svg>
+                        </div>
+                        <div class="panel-title">
+                            <h2>Calendário de plantões</h2>
+                            <p>Selecione um dia para conferir os profissionais organizados por setor.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calendar-body">
+                    <div id="calendario" class="calendario">
+                        <div class="calendar-empty">Os dias disponíveis aparecerão aqui depois do processamento.</div>
+                    </div>
+
+                    <div id="detalhesDia" class="detalhes-dia">
+                        <div id="conteudoDia" class="placeholder-detail">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M12 16v-4M12 8h.01" />
+                            </svg>
+                            Selecione um dia acima para visualizar os plantões.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <span>Relatório de Presença Médica • Painel local</span>
+                <span id="footerStatus">Pronto para importar um arquivo</span>
+            </footer>
+        </main>
     </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
     <script>
         let dadosMedicos = {}
+        let diasMapGlobal = {}
+        let toastTimer = null
+
+        const arquivoInput = document.getElementById("arquivo")
+        const dropzone = document.getElementById("dropzone")
+        const fileName = document.getElementById("fileName")
+
+        arquivoInput.addEventListener("change", () => {
+            const file = arquivoInput.files[0]
+            atualizarNomeArquivo(file)
+        })
+
+        ;["dragenter", "dragover"].forEach(eventName => {
+            dropzone.addEventListener(eventName, e => {
+                e.preventDefault()
+                dropzone.classList.add("dragover")
+            })
+        })
+
+        ;["dragleave", "drop"].forEach(eventName => {
+            dropzone.addEventListener(eventName, e => {
+                e.preventDefault()
+                dropzone.classList.remove("dragover")
+            })
+        })
+
+        dropzone.addEventListener("drop", e => {
+            const files = e.dataTransfer.files
+            if (!files || !files.length) return
+
+            const dt = new DataTransfer()
+            dt.items.add(files[0])
+            arquivoInput.files = dt.files
+            atualizarNomeArquivo(files[0])
+        })
+
+        function atualizarNomeArquivo(file) {
+            if (!file) {
+                fileName.textContent = "Nenhum arquivo selecionado"
+                return
+            }
+            fileName.textContent = file.name
+        }
+
+        function mostrarToast(mensagem, tipo = "success") {
+            const toast = document.getElementById("toast")
+            const icon = tipo === "error"
+                ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>'
+                : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>'
+
+            toast.className = `toast ${tipo === "error" ? "error" : ""}`
+            toast.innerHTML = `${icon}<span>${escapeHtml(mensagem)}</span>`
+
+            clearTimeout(toastTimer)
+            requestAnimationFrame(() => toast.classList.add("show"))
+            toastTimer = setTimeout(() => toast.classList.remove("show"), 3200)
+        }
+
+        function escapeHtml(valor) {
+            return String(valor ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;")
+        }
 
         function processar() {
-            const file = document.getElementById("arquivo").files[0]
+            const file = arquivoInput.files[0]
 
             if (!file) {
-                alert("Selecione um arquivo")
+                mostrarToast("Selecione um arquivo de relatório antes de processar.", "error")
                 return
             }
 
             const reader = new FileReader()
+            const btn = document.getElementById("btnProcessar")
+            const originalText = btn.innerHTML
+
+            btn.disabled = true
+            btn.textContent = "Processando..."
+            document.getElementById("footerStatus").textContent = "Processando relatório..."
 
             reader.onload = function (e) {
-                const texto = e.target.result
-                const relatorios = texto.split("RELATÓRIO DE PRESENÇA MÉDICA")
+                try {
+                    const texto = e.target.result
+                    const relatorios = texto.split("RELATÓRIO DE PRESENÇA MÉDICA")
+                    dadosMedicos = {}
 
-                dadosMedicos = {}
+                    relatorios.forEach(rel => {
+                        const dataMatch = rel.match(/Data do Plantão:\s*(\d{4}-\d{2}-\d{2})/)
+                        if (!dataMatch) return
 
-                relatorios.forEach(rel => {
-                    const dataMatch = rel.match(/Data do Plantão:\s*(\d{4}-\d{2}-\d{2})/)
+                        const data = dataMatch[1]
+                        const linhas = rel.split("\n")
+                        let setorAtual = ""
 
-                    if (!dataMatch) return
+                        linhas.forEach(l => {
+                            l = l.trim()
 
-                    const data = dataMatch[1]
-                    const linhas = rel.split("\n")
-
-                    let setorAtual = ""
-
-                    linhas.forEach(l => {
-                        l = l.trim()
-
-                        if (
-                            l &&
-                            !l.startsWith("-") &&
-                            !l.includes("Data do Plantão") &&
-                            !l.includes("Gerado em") &&
-                            !l.includes("RELATÓRIO")
-                        ) {
-                            setorAtual = l
-                        }
-
-                        if (l.startsWith("- ")) {
-                            let conteudo = l.replace("- ", "").trim()
-
-                            let nome = conteudo
-                            let obs = ""
-
-                            if (conteudo.includes("|")) {
-                                let p = conteudo.split("|")
-                                nome = p[0].trim()
-                                obs = p[1].trim()
+                            if (
+                                l &&
+                                !l.startsWith("-") &&
+                                !l.includes("Data do Plantão") &&
+                                !l.includes("Gerado em") &&
+                                !l.includes("RELATÓRIO")
+                            ) {
+                                setorAtual = l
                             }
 
-                            if (!dadosMedicos[nome]) {
-                                dadosMedicos[nome] = []
-                            }
+                            if (l.startsWith("- ")) {
+                                let conteudo = l.replace("- ", "").trim()
+                                let nome = conteudo
+                                let obs = ""
 
-                            dadosMedicos[nome].push({
-                                data: data,
-                                obs: obs,
-                                setor: setorAtual
-                            })
-                        }
+                                if (conteudo.includes("|")) {
+                                    let p = conteudo.split("|")
+                                    nome = p[0].trim()
+                                    obs = p.slice(1).join("|").trim()
+                                }
+
+                                if (!nome) return
+
+                                if (!dadosMedicos[nome]) {
+                                    dadosMedicos[nome] = []
+                                }
+
+                                dadosMedicos[nome].push({
+                                    data: data,
+                                    obs: obs,
+                                    setor: setorAtual || "Setor não informado"
+                                })
+                            }
+                        })
                     })
-                })
 
-                gerarTabela()
-                gerarCalendario()
+                    const totalRegistros = Object.values(dadosMedicos).reduce((acc, registros) => acc + registros.length, 0)
+
+                    if (!totalRegistros) {
+                        dadosMedicos = {}
+                        gerarTabela()
+                        gerarCalendario()
+                        atualizarResumo()
+                        habilitarExportacoes(false)
+                        mostrarToast("Nenhum registro válido foi encontrado nesse arquivo.", "error")
+                        document.getElementById("footerStatus").textContent = "Arquivo sem registros reconhecidos"
+                        return
+                    }
+
+                    gerarTabela()
+                    gerarCalendario()
+                    atualizarResumo()
+                    habilitarExportacoes(true)
+                    limparBusca()
+
+                    mostrarToast(`Relatório processado: ${Object.keys(dadosMedicos).length} médicos e ${totalRegistros} plantões.`)
+                    document.getElementById("footerStatus").textContent = `${file.name} • ${totalRegistros} plantões processados`
+                } catch (erro) {
+                    console.error(erro)
+                    mostrarToast("Não foi possível processar o arquivo. Verifique o formato do relatório.", "error")
+                    document.getElementById("footerStatus").textContent = "Falha ao processar o arquivo"
+                } finally {
+                    btn.disabled = false
+                    btn.innerHTML = originalText
+                }
+            }
+
+            reader.onerror = function () {
+                btn.disabled = false
+                btn.innerHTML = originalText
+                mostrarToast("Não foi possível ler o arquivo selecionado.", "error")
+                document.getElementById("footerStatus").textContent = "Falha na leitura do arquivo"
             }
 
             reader.readAsText(file)
         }
 
-        function formatar(data) {
+        function formatar(data, comAno = false) {
             let p = data.split("-")
-            return `${p[2]}/${p[1]}`
+            return comAno ? `${p[2]}/${p[1]}/${p[0]}` : `${p[2]}/${p[1]}`
+        }
+
+        function obterIniciais(nome) {
+            const partes = nome.trim().split(/\s+/).filter(Boolean)
+            if (!partes.length) return "MD"
+            if (partes.length === 1) return partes[0].slice(0, 2).toUpperCase()
+            return (partes[0][0] + partes[partes.length - 1][0]).toUpperCase()
         }
 
         function gerarTabela() {
             const tbody = document.querySelector("#tabela tbody")
             tbody.innerHTML = ""
 
-            const nomes = Object.keys(dadosMedicos)
-                .sort((a, b) => a.localeCompare(b, 'pt-BR'))
+            const nomes = Object.keys(dadosMedicos).sort((a, b) => a.localeCompare(b, "pt-BR"))
+
+            if (!nomes.length) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td class="empty-table" colspan="5">
+                            <strong>Aguardando relatório</strong>
+                            Importe e processe um arquivo para visualizar os dados consolidados.
+                        </td>
+                    </tr>
+                `
+                atualizarContadorTabela()
+                return
+            }
 
             nomes.forEach(nome => {
                 const registros = dadosMedicos[nome]
-
                 let dias = []
                 let obs = []
                 let setores = new Set()
@@ -262,53 +1551,90 @@
                 registros.forEach(r => {
                     dias.push(formatar(r.data))
                     setores.add(r.setor)
-
-                    if (r.obs) {
-                        obs.push(`${formatar(r.data)} (${r.obs})`)
-                    }
+                    if (r.obs) obs.push(`${formatar(r.data)} (${r.obs})`)
                 })
 
-                const tr = document.createElement("tr")
+                const setorTags = Array.from(setores)
+                    .map(setor => `<span class="tag">${escapeHtml(setor)}</span>`)
+                    .join("")
 
+                const diasTags = [...new Set(dias)]
+                    .map(dia => `<span class="tag day">${escapeHtml(dia)}</span>`)
+                    .join("")
+
+                const obsHtml = obs.length
+                    ? obs.map(item => `<div class="obs-item">${escapeHtml(item)}</div>`).join("")
+                    : '<span style="color:#9aabb5">—</span>'
+
+                const tr = document.createElement("tr")
+                tr.dataset.search = `${nome} ${Array.from(setores).join(" ")}`.toLowerCase()
                 tr.innerHTML = `
-                    <td>${nome}</td>
-                    <td>${Array.from(setores).join(", ")}</td>
-                    <td>${registros.length}</td>
-                    <td>${dias.join(", ")}</td>
-                    <td class="obs">${obs.join("<br>")}</td>
+                    <td>
+                        <div class="doctor-cell">
+                            <span class="doctor-avatar">${escapeHtml(obterIniciais(nome))}</span>
+                            <span>${escapeHtml(nome)}</span>
+                        </div>
+                    </td>
+                    <td><div class="sector-tags">${setorTags}</div></td>
+                    <td><span class="plantao-count">${registros.length}</span></td>
+                    <td><div class="days-wrap">${diasTags}</div></td>
+                    <td class="obs">${obsHtml}</td>
                 `
 
                 tbody.appendChild(tr)
             })
+
+            atualizarContadorTabela()
         }
 
         function filtrar(valor) {
-            valor = valor.toLowerCase()
+            const busca = valor.trim().toLowerCase()
+            document.getElementById("clearSearch").style.display = busca ? "grid" : "none"
 
-            document.querySelectorAll("#tabela tbody tr").forEach(tr => {
-                const nome = tr.children[0].innerText.toLowerCase()
-                const setor = tr.children[1].innerText.toLowerCase()
-
-                tr.style.display =
-                    nome.includes(valor) || setor.includes(valor)
-                        ? ""
-                        : "none"
+            document.querySelectorAll("#tabela tbody tr[data-search]").forEach(tr => {
+                tr.style.display = tr.dataset.search.includes(busca) ? "" : "none"
             })
+
+            atualizarContadorTabela()
+        }
+
+        function limparBusca() {
+            const input = document.getElementById("busca")
+            input.value = ""
+            document.getElementById("clearSearch").style.display = "none"
+
+            document.querySelectorAll("#tabela tbody tr[data-search]").forEach(tr => {
+                tr.style.display = ""
+            })
+
+            atualizarContadorTabela()
+        }
+
+        function atualizarContadorTabela() {
+            const linhas = [...document.querySelectorAll("#tabela tbody tr[data-search]")]
+            const visiveis = linhas.filter(tr => tr.style.display !== "none").length
+            const counter = document.getElementById("tableCounter")
+
+            if (!linhas.length) {
+                counter.textContent = "Nenhum registro processado"
+                return
+            }
+
+            counter.textContent = visiveis === linhas.length
+                ? `${linhas.length} ${linhas.length === 1 ? "médico" : "médicos"}`
+                : `${visiveis} de ${linhas.length} médicos`
         }
 
         function gerarCalendario() {
             const calendario = document.getElementById("calendario")
             calendario.innerHTML = ""
-
-            let diasMap = {}
+            diasMapGlobal = {}
 
             Object.keys(dadosMedicos).forEach(nome => {
                 dadosMedicos[nome].forEach(r => {
-                    if (!diasMap[r.data]) {
-                        diasMap[r.data] = []
-                    }
+                    if (!diasMapGlobal[r.data]) diasMapGlobal[r.data] = []
 
-                    diasMap[r.data].push({
+                    diasMapGlobal[r.data].push({
                         nome: nome,
                         setor: r.setor,
                         obs: r.obs
@@ -316,122 +1642,202 @@
                 })
             })
 
-            Object.keys(diasMap)
-                .sort()
-                .forEach(data => {
-                    const botao = document.createElement("button")
-                    botao.className = "dia"
-                    botao.innerText = formatar(data)
+            const datas = Object.keys(diasMapGlobal).sort()
 
-                    botao.onclick = () => mostrarDetalhesDia(data, diasMap[data])
+            if (!datas.length) {
+                calendario.innerHTML = '<div class="calendar-empty">Os dias disponíveis aparecerão aqui depois do processamento.</div>'
+                document.getElementById("conteudoDia").className = "placeholder-detail"
+                document.getElementById("conteudoDia").innerHTML = `
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4M12 8h.01" />
+                    </svg>
+                    Selecione um dia acima para visualizar os plantões.
+                `
+                return
+            }
 
-                    calendario.appendChild(botao)
-                })
+            datas.forEach(data => {
+                const botao = document.createElement("button")
+                const [ano, mes, dia] = data.split("-").map(Number)
+                const dateObj = new Date(ano, mes - 1, dia)
+                const semana = new Intl.DateTimeFormat("pt-BR", { weekday: "short" })
+                    .format(dateObj)
+                    .replace(".", "")
+
+                botao.className = "dia"
+                botao.dataset.date = data
+                botao.innerHTML = `
+                    <span class="day-week">${escapeHtml(semana)}</span>
+                    <span class="day-date">${escapeHtml(formatar(data))}</span>
+                    <span class="day-count">${diasMapGlobal[data].length} ${diasMapGlobal[data].length === 1 ? "registro" : "registros"}</span>
+                `
+
+                botao.onclick = () => mostrarDetalhesDia(data, diasMapGlobal[data], botao)
+                calendario.appendChild(botao)
+            })
         }
 
-        function mostrarDetalhesDia(data, registros) {
+        function mostrarDetalhesDia(data, registros, botaoAtivo) {
             const conteudo = document.getElementById("conteudoDia")
-
             let setores = {}
 
+            document.querySelectorAll(".dia.ativo").forEach(btn => btn.classList.remove("ativo"))
+            if (botaoAtivo) botaoAtivo.classList.add("ativo")
+
             registros.forEach(r => {
-                if (!setores[r.setor]) {
-                    setores[r.setor] = []
-                }
+                if (!setores[r.setor]) setores[r.setor] = []
 
-                let nomeCompleto = r.nome
-
-                if (r.obs) {
-                    nomeCompleto += ` (${r.obs})`
-                }
-
-                setores[r.setor].push(nomeCompleto)
+                setores[r.setor].push({
+                    nome: r.nome,
+                    obs: r.obs
+                })
             })
 
-            let html = `<h3>Plantões do dia ${formatar(data)}</h3>`
+            let html = `
+                <div class="details-head">
+                    <h3>Plantões de ${escapeHtml(formatar(data, true))}</h3>
+                    <span>${registros.length} ${registros.length === 1 ? "profissional" : "registros"}</span>
+                </div>
+                <div class="setores-grid">
+            `
 
-            Object.keys(setores).forEach(setor => {
-                html += `
-                    <div class="setor-bloco">
-                        <strong>${setor}</strong><br>
-                        ${setores[setor].join(", ")}
-                    </div>
-                `
-            })
+            Object.keys(setores)
+                .sort((a, b) => a.localeCompare(b, "pt-BR"))
+                .forEach(setor => {
+                    const medicos = setores[setor]
+                    html += `
+                        <div class="setor-bloco">
+                            <div class="setor-title">
+                                <span>${escapeHtml(setor)}</span>
+                                <span class="setor-count">${medicos.length}</span>
+                            </div>
+                            ${medicos.map(m => `
+                                <div class="medico-dia">
+                                    <span>${escapeHtml(m.nome)}${m.obs ? ` <strong>• ${escapeHtml(m.obs)}</strong>` : ""}</span>
+                                </div>
+                            `).join("")}
+                        </div>
+                    `
+                })
 
+            html += "</div>"
+            conteudo.className = ""
             conteudo.innerHTML = html
         }
 
+        function atualizarResumo() {
+            const nomes = Object.keys(dadosMedicos)
+            const setores = new Set()
+            const dias = new Set()
+            let plantoes = 0
+
+            nomes.forEach(nome => {
+                dadosMedicos[nome].forEach(r => {
+                    plantoes++
+                    if (r.setor) setores.add(r.setor)
+                    if (r.data) dias.add(r.data)
+                })
+            })
+
+            document.getElementById("statMedicos").textContent = nomes.length
+            document.getElementById("statPlantoes").textContent = plantoes
+            document.getElementById("statDias").textContent = dias.size
+            document.getElementById("statSetores").textContent = setores.size
+        }
+
+        function habilitarExportacoes(habilitar) {
+            document.getElementById("btnTxt").disabled = !habilitar
+            document.getElementById("btnExcel").disabled = !habilitar
+        }
+
         function exportar() {
+            if (!Object.keys(dadosMedicos).length) {
+                mostrarToast("Processe um relatório antes de exportar.", "error")
+                return
+            }
+
             let texto = "RELATÓRIO DE PLANTÕES\n\n"
 
-            Object.keys(dadosMedicos).forEach(nome => {
-                texto += nome + "\n"
+            Object.keys(dadosMedicos)
+                .sort((a, b) => a.localeCompare(b, "pt-BR"))
+                .forEach(nome => {
+                    texto += nome + "\n"
 
-                dadosMedicos[nome].forEach(r => {
-                    let p = r.data.split("-")
-                    let d = `${p[2]}/${p[1]}/${p[0]}`
-
-                    texto += `${d} - ${r.setor}`
-
-                    if (r.obs) {
-                        texto += ` (${r.obs})`
-                    }
+                    dadosMedicos[nome]
+                        .slice()
+                        .sort((a, b) => a.data.localeCompare(b.data))
+                        .forEach(r => {
+                            texto += `${formatar(r.data, true)} - ${r.setor}`
+                            if (r.obs) texto += ` (${r.obs})`
+                            texto += "\n"
+                        })
 
                     texto += "\n"
                 })
 
-                texto += "\n"
-            })
-
-            const blob = new Blob([texto], { type: "text/plain" })
-
+            const blob = new Blob([texto], { type: "text/plain;charset=utf-8" })
             const link = document.createElement("a")
             link.href = URL.createObjectURL(blob)
             link.download = "plantao_medicos.txt"
             link.click()
+            URL.revokeObjectURL(link.href)
+            mostrarToast("Arquivo TXT exportado com sucesso.")
         }
 
         function exportarExcel() {
+            if (!Object.keys(dadosMedicos).length) {
+                mostrarToast("Processe um relatório antes de exportar.", "error")
+                return
+            }
+
+            if (typeof XLSX === "undefined") {
+                mostrarToast("A biblioteca de Excel não pôde ser carregada. Verifique sua conexão.", "error")
+                return
+            }
+
             let dados = []
 
-            Object.keys(dadosMedicos).forEach(nome => {
-                let registros = dadosMedicos[nome]
+            Object.keys(dadosMedicos)
+                .sort((a, b) => a.localeCompare(b, "pt-BR"))
+                .forEach(nome => {
+                    let registros = dadosMedicos[nome]
+                    let dias = []
+                    let obs = []
+                    let setores = new Set()
 
-                let dias = []
-                let obs = []
-                let setores = new Set()
+                    registros.forEach(r => {
+                        let dataFormatada = formatar(r.data, true)
+                        dias.push(dataFormatada)
+                        setores.add(r.setor)
+                        if (r.obs) obs.push(`${dataFormatada} (${r.obs})`)
+                    })
 
-                registros.forEach(r => {
-                    let p = r.data.split("-")
-                    let dataFormatada = `${p[2]}/${p[1]}/${p[0]}`
-
-                    dias.push(dataFormatada)
-                    setores.add(r.setor)
-
-                    if (r.obs) {
-                        obs.push(`${dataFormatada} (${r.obs})`)
-                    }
+                    dados.push({
+                        Medico: nome,
+                        Setor: Array.from(setores).join(", "),
+                        Plantoes: registros.length,
+                        Dias: dias.join(", "),
+                        Observacoes: obs.join(" | ")
+                    })
                 })
-
-                dados.push({
-                    Medico: nome,
-                    Setor: Array.from(setores).join(", "),
-                    Plantoes: registros.length,
-                    Dias: dias.join(", "),
-                    Observacoes: obs.join(" | ")
-                })
-            })
 
             const ws = XLSX.utils.json_to_sheet(dados)
+            ws["!cols"] = [
+                { wch: 38 },
+                { wch: 32 },
+                { wch: 12 },
+                { wch: 46 },
+                { wch: 54 }
+            ]
+
             const wb = XLSX.utils.book_new()
-
             XLSX.utils.book_append_sheet(wb, ws, "Relatorio")
-
             XLSX.writeFile(wb, "relatorio_plantoes_medicos.xlsx")
+            mostrarToast("Planilha Excel exportada com sucesso.")
         }
+
+        atualizarResumo()
     </script>
-
 </body>
-
 </html>
